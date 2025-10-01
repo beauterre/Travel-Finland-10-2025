@@ -39,18 +39,34 @@
         .icoon {
             margin-right: 0.5em;
         }
+        
         #videos {
-            margin-top: 2em;
-            padding: 1em;
-            background: #f2e6d9;
-            border-radius: 8px;
-        }
-        #videos a{
-            padding: 25px 10px 25px 10px;
-            margin: 5px;
-            background: #000;
-            color: #00F;
-        }
+    margin-top: 2em;
+    padding: 1em;
+    background: #f2e6d9;
+    border-radius: 8px;
+
+    display: flex;            /* of grid */
+    flex-wrap: wrap;          /* zodat ze doorlopen */
+    gap: 10px;                /* ruimte tussen de blokjes */
+}
+
+#videos a {
+    display: inline-flex;     /* of block */
+    align-items: center;
+    justify-content: center;
+
+    aspect-ratio: 16 / 9;     /* moderne browsers */
+    width: 200px;             /* kies zelf de breedte */
+    
+    background: #000;
+    color: #0af;
+    text-decoration: none;
+    font-weight: bold;
+
+    border-radius: 4px;
+}
+    
     </style>
 </head>
 <body>
