@@ -40,35 +40,55 @@
             margin-right: 0.5em;
         }
         
-        #videos {
-    margin-top: 2em;
-    padding: 1em;
-    background: #f2e6d9;
-    border-radius: 8px;
-
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-#videos a {
-    display: block;
-    aspect-ratio: 9 / 16;   /* staand */
-    width: 160px;           /* kies breedte zelf */
-    background: #000;
-    border-radius: 6px;
-    overflow: hidden;
-    text-decoration: none;
-    color: #fff;
-    position: relative;
-}
-
-#videos img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;      /* thumbnail vult het blok */
-    display: block;
-}
+           #videos {
+      margin: 2em auto;
+      padding: 1em;
+      background: #f2e6d9;
+      border-radius: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      max-width: 900px;
+  }
+  .video-thumb {
+      display: block;
+      aspect-ratio: 9 / 16;
+      width: 160px;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+  }
+  .video-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+  }
+  .video-thumb::after {
+      content: "▶";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3em;
+      color: rgba(255,255,255,0.8);
+      text-shadow: 0 0 6px #000;
+      pointer-events: none;
+  }
+  #player {
+      margin: 2em auto;
+      max-width: 560px;
+      aspect-ratio: 16 / 9;
+      display: none;
+  }
+  #player iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+  }
     </style>
 </head>
 <body>
@@ -100,7 +120,13 @@
 const videoIDs = [
   "m-T2DhhYkAg", // vervang door echte ID's
   "8S9dVEdzSzg",
-  "iH0Zi2JnjQM"
+  "iH0Zi2JnjQM",
+    "7WQiskgvfKM",
+"2rXAnugty0M",
+    "eYM3Gh6n_Wkl",
+"WmYTkuZsVbo",
+    "cmhFsg74jwI",
+    "qqsQH4stofc"
 ];
 
 const videosContainer = document.getElementById("videos");
@@ -121,22 +147,7 @@ videoIDs.forEach(id => {
 });
 </script>
     
-
     
-    ik zal kijken of ik dit netter kan maken als ik in Helsinki ben.. en weer gewoon kan typen.
-  ik heb daar nog geen internet, dus wordt waarschijnlijk even stil.
-    <div>
-      <a href = "https://youtube.com/shorts/m-T2DhhYkAg?si=3S_N9s7bDv4LBvKP"> 01 </a>
-      <a href = "https://youtube.com/shorts/8S9dVEdzSzg?si=55a-WTIWdqXj-xUr"> 02 </a>
-      <a href = "https://youtube.com/shorts/iH0Zi2JnjQM?si=MGktiQPyLXblsA6y"> 03 </a>
-      <a href = "https://youtube.com/shorts/7WQiskgvfKM?si=Ue94Jd74www_Y57S"> 04 </a>
-      <a href = "https://youtube.com/shorts/2rXAnugty0M?si=NqL1nlzjJ_roFZ6G"> 05 </a>
-      <a href = "https://youtube.com/shorts/eYM3Gh6n_Wk?si=fOXQ3ur86kldWdg0"> 06 </a>
-            <a href = "https://youtube.com/shorts/WmYTkuZsVbo?si=218MMwGLU5q_NwsR"> 07</a>
-            <a href = "https://youtube.com/shorts/cmhFsg74jwI?si=PglIs7dYerti3Elu"> 08</a>
-      <a href = "https://youtube.com/shorts/qqsQH4stofc?si=xWhr01J0k8fI4lNJ"> 09</a>
-      
-    </div>
 
 </body>
 </html>
