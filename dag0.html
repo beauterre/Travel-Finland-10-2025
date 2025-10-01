@@ -46,27 +46,29 @@
     background: #f2e6d9;
     border-radius: 8px;
 
-    display: flex;            /* of grid */
-    flex-wrap: wrap;          /* zodat ze doorlopen */
-    gap: 10px;                /* ruimte tussen de blokjes */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 #videos a {
-    display: inline-flex;     /* of block */
-    align-items: center;
-    justify-content: center;
-
-    aspect-ratio: 16 / 9;     /* moderne browsers */
-    width: 200px;             /* kies zelf de breedte */
-    
+    display: block;
+    aspect-ratio: 9 / 16;   /* staand */
+    width: 160px;           /* kies breedte zelf */
     background: #000;
-    color: #0af;
+    border-radius: 6px;
+    overflow: hidden;
     text-decoration: none;
-    font-weight: bold;
-
-    border-radius: 4px;
+    color: #fff;
+    position: relative;
 }
-    
+
+#videos img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;      /* thumbnail vult het blok */
+    display: block;
+}
     </style>
 </head>
 <body>
@@ -86,9 +88,44 @@
     </ul>
 
     <h2>📷 videos</h2>
+
+
+
+<div id="player">
+  <iframe allowfullscreen></iframe>
+</div>
+    <div id="videos"></div>
+<script>
+// Zet hier je lijst met YouTube video IDs
+const videoIDs = [
+  "m-T2DhhYkAg", // vervang door echte ID's
+  "8S9dVEdzSzg",
+  "iH0Zi2JnjQM"
+];
+
+const videosContainer = document.getElementById("videos");
+const player = document.getElementById("player");
+const iframe = player.querySelector("iframe");
+
+// thumbnails maken
+videoIDs.forEach(id => {
+  const thumb = document.createElement("div");
+  thumb.className = "video-thumb";
+  thumb.innerHTML = `<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="YouTube thumbnail">`;
+  thumb.addEventListener("click", () => {
+    iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+    player.style.display = "block";
+    player.scrollIntoView({behavior: "smooth"});
+  });
+  videosContainer.appendChild(thumb);
+});
+</script>
+    
+
+    
     ik zal kijken of ik dit netter kan maken als ik in Helsinki ben.. en weer gewoon kan typen.
   ik heb daar nog geen internet, dus wordt waarschijnlijk even stil.
-    <div id="videos">
+    <div>
       <a href = "https://youtube.com/shorts/m-T2DhhYkAg?si=3S_N9s7bDv4LBvKP"> 01 </a>
       <a href = "https://youtube.com/shorts/8S9dVEdzSzg?si=55a-WTIWdqXj-xUr"> 02 </a>
       <a href = "https://youtube.com/shorts/iH0Zi2JnjQM?si=MGktiQPyLXblsA6y"> 03 </a>
