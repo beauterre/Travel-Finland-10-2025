@@ -102,21 +102,32 @@
 <h1>✈️ Reisverslag Finland - Oktober 2025</h1>
 <a href="index.html"> Terug naar de index </a>
 
-<h2>📅 Dag 1  (2 oktober 2025)</h2>
-<ul class="agenda">
-    <li>8:30 telefoon opener kwijt. internet beperkt.</li>
-    <li>9:50 In cafe in het Forum alles geopend.. zat gewoon zo'n prikding in. Geen telefoon meer, maar onbeperkt internet...</li>
-    <li>10:05 Lekker lopen toeristen in Helsinki. Vandaar straks een Hele hoop foto's en videos.</li>
-    <li>12:25 Trein naar Lahti.. Daar ben straks 13:40 dan pikt Raagi mij op met de bus. In de trein edit ik op mijn nieuwe Chromebookje met Fins toetsenbord.</li>
-    <li>12:13 mijn meditatie alarm gaat af voor 13:13.. ik neem hem maar vast, maar moet mijn klok dus gelijk zetten nog.. vreemd.. of misschien ben ik gewoon een uur te vroeg.. of te laat.. alles kan.. nu mediteren.. ik laat het wat vreemd achter, regel ik vanavond bij Raagi</li>
-</ul>
+<table>
+<tr>
+<td>
+    <h2>📅 Dag 1  (2 oktober 2025)</h2>
+    <ul class="agenda">
+        <li>8:30 telefoon opener kwijt. internet beperkt.</li>
+        <li>9:50 In cafe in het Forum alles geopend.. zat gewoon zo'n prikding in. Geen telefoon meer, maar onbeperkt internet...</li>
+        <li>10:05 Lekker lopen toeristen in Helsinki. Vandaar straks een Hele hoop foto's en videos.</li>
+        <li>12:25 Trein naar Lahti.. Daar ben straks 13:40 dan pikt Raagi mij op met de bus. In de trein edit ik op mijn nieuwe Chromebookje met Fins toetsenbord.</li>
+        <li>12:13 mijn meditatie alarm gaat af voor 13:13.. ik neem hem maar vast, maar moet mijn klok dus gelijk zetten nog.. vreemd.. of misschien ben ik gewoon een uur te vroeg.. of te laat.. alles kan.. nu mediteren.. ik laat het wat vreemd achter, regel ik vanavond bij Raagi</li>
+    </ul>
 
-<h2>📷 Galerie</h2>
+</td>
+<td>
 <div id="player"></div>
 <div id="nav-buttons">
     <button id="prevBtn">← Prev</button>
     <button id="nextBtn">Next →</button>
+    <button id="pictureFullScreen">⛶</button>
 </div>
+
+</td>
+</tr>
+</>table>
+
+<h2>📷 Galerie</h2>
 <div id="gallery"></div>
 
 <script>
@@ -130,6 +141,19 @@ const items = [
 
 const gallery = document.getElementById("gallery");
 const player = document.getElementById("player");
+
+document.getElementById("pictureFullScreen").addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+        // Zet de player fullscreen
+        player.requestFullscreen().catch(err => {
+            console.error(`Fullscreen fout: ${err.message}`);
+        });
+    } else {
+        // Als we al fullscreen zijn → terug
+        document.exitFullscreen();
+    }
+});
+
 let currentIndex = 0;
 
 function fixPlayerAspect(img) {
