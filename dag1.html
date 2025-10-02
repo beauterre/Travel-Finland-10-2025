@@ -132,6 +132,18 @@ const gallery = document.getElementById("gallery");
 const player = document.getElementById("player");
 let currentIndex = 0;
 
+function fixPlayerAspect(img) {
+    const aspect = img.naturalWidth / img.naturalHeight;
+
+    if (aspect >= 1) {
+        // liggend → 16:9
+        player.style.aspectRatio = "16 / 9";
+    } else {
+        // staand → 9:16
+        player.style.aspectRatio = "9 / 16";
+    }
+}
+
 // functie om de player te updaten 
 function showItem(index) {
     currentIndex = index;
@@ -144,10 +156,15 @@ function showItem(index) {
         iframe.src = `https://www.youtube.com/embed/${item.id}?autoplay=1`;
         iframe.allowFullscreen = true;
         player.appendChild(iframe);
+        player.style.aspectRatio="9 / 16";
     } else if(item.kind === "image") {
         const img = document.createElement("img");
         img.src = photoPath + item.url;
         img.alt = "Foto";
+         img.onload = () => {
+             fixPlayerAspect(img);
+        }; 
+               player.style.aspectRatio="9 / 16";
         player.appendChild(img);
     }
     player.style.display = "flex";
