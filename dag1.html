@@ -163,9 +163,11 @@ const gallery = document.getElementById("gallery");
 const player = document.getElementById("player");
 let currentIndex = 0;
 
-// functie om de player te updaten
+// functie om de player te updaten 
 function showItem(index) {
     currentIndex = index;
+
+    // player updaten
     player.innerHTML = "";
     const item = items[index];
     if(item.kind === "youtube") {
@@ -181,7 +183,20 @@ function showItem(index) {
     }
     player.style.display = "flex";
     player.scrollIntoView({behavior: "smooth"});
+
+    // **active thumbnail markeren**
+    document.querySelectorAll(".thumb").forEach((thumb, i) => {
+        if(i === index) {
+            thumb.style.border = "3px solid #2a4d69"; // actief
+            thumb.style.opacity = "1";
+        } else {
+            thumb.style.border = "none";
+            thumb.style.opacity = "0.7";
+        }
+    });
 }
+
+
 
 // thumbnails maken
 items.forEach((item, index) => {
