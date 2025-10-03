@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reisverslag Finland - Dag 2 (3 oktober 2025)</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 2em;
+        background-color: #f0f8ff;
+        color: #333;
+    }
+    h1, h2 { color: #2a4d69; }
+    .agenda { list-style: none; padding: 0; }
+    .agenda li {
+        background: #d9e6f2;
+        margin: 0.5em 0;
+        padding: 0.8em;
+        border-radius: 8px;
+        transition: background 0.3s;
+    }
+    .agenda li:hover { background: #aac8e0; }
+    a { text-decoration: none; color: #1b3a57; font-weight: bold; }
+    a:hover { text-decoration: underline; }
+    .icoon { margin-right: 0.5em; }
+
+    #gallery {
+        margin: 2em auto;
+        padding: 1em;
+        background: #f2e6d9;
+        border-radius: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        max-width: 900px;
+    }
+    .thumb {
+        display: block;
+        width: 54px;
+        border-radius: 6px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+    }
+    .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .thumb.youtube::after {
+        content: "▶";
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5em;
+        color: rgba(255,255,255,0.8);
+        text-shadow: 0 0 6px #000;
+        pointer-events: none;
+    }
+
+    #player {
+        margin: 2em auto;
+        max-width: 560px;
+        aspect-ratio: 9 / 16;
+        display: none;
+        position: relative;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #player img, #player iframe {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* letterbox */
+    }
+    #nav-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 1em;
+    }
+    #nav-buttons button {
+        padding: 0.5em 1em;
+        border: none;
+        background: #2a4d69;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    #nav-buttons button:hover { background: #1b3a57; }
+</style>
+</head>
+<body>
+
+<h1>✈️ Reisverslag Finland </h1>
+<a href="index.html"> Terug naar de index </a>
+
+<table>
+<tr>
+<td>
+    <h2>📅 Dag 2  (2 oktober 2025)</h2>
+    <ul class="agenda">
+        <li>7:30 De loodgieter kwam de kraan vervangen</li>
+        <li>8:00 Met liinu gewandelt</li>
+        <li>9:00 Makä (de buurman, waarschijnlijk nickname) kwam langs.. Ook in Finland hebben ze bijnamen. De logica van de namen en bijnamen is nog onduidelijk, ook aan Raagi.</li>
+        <li>9:55 Raagi gaat nog even een uurtje liggen.. het was vroeg en vanmiddag gaan we naar Padasjoki.</li>
+    </ul>
+
+</td>
+<td>
+<div id="player"></div>
+<div id="nav-buttons">
+    <button id="prevBtn">← Prev</button>
+    <button id="nextBtn">Next →</button>
+    <button id="pictureFullScreen">⛶</button>
+</div>
+
+</td>
+</tr>
+</table>
+
+<h2>📷 Galerie</h2>
+<div id="gallery"></div>
+
+<script>
+const photoPath = "./fotos/Dag1/"; // basispad voor lokale foto's
+
+// lijst met items: {kind:"youtube", id:""} of {kind:"image", url:""}
+const items = [
+    { kind: "youtube", id: "------" },
+    { kind: "image", url: "-------" }
+];
+
+const gallery = document.getElementById("gallery");
+const player = document.getElementById("player");
+
+document.getElementById("pictureFullScreen").addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+        // Zet de player fullscreen
+        player.requestFullscreen().catch(err => {
+            console.error(`Fullscreen fout: ${err.message}`);
+        });
+    } else {
+        // Als we al fullscreen zijn → terug
+        document.exitFullscreen();
+    }
+});
+
+let currentIndex = 0;
+
+function fixPlayerAspect(img) {
+    const aspect = img.naturalWidth / img.naturalHeight;
+
+    if (aspect >= 1) {
+        // liggend → 16:9
+        player.style.aspectRatio = "16 / 9";
+    } else {
+        // staand → 9:16
+        player.style.aspectRatio = "9 / 16";
+    }
+}
+
+// functie om de player te updaten 
+function showItem(index) {
+    currentIndex = index;
+
+    // player updaten
+    player.innerHTML = "";
+    const item = items[index];
+    if(item.kind === "youtube") {
+        const iframe = document.createElement("iframe");
+        iframe.src = `https://www.youtube.com/embed/${item.id}?autoplay=1`;
+        iframe.allowFullscreen = true;
+        player.appendChild(iframe);
+        player.style.aspectRatio="9 / 16";
+    } else if(item.kind === "image") {
+        const img = document.createElement("img");
+        img.src = photoPath + item.url;
+        img.alt = "Foto";
+         img.onload = () => {
+             fixPlayerAspect(img);
+        }; 
+               player.style.aspectRatio="9 / 16";
+        player.appendChild(img);
+    }
+    player.style.display = "flex";
+    player.scrollIntoView({behavior: "smooth"});
+
+    // **active thumbnail markeren**
+    document.querySelectorAll(".thumb").forEach((thumb, i) => {
+        if(i === index) {
+            thumb.style.border = "3px solid #2a4d69"; // actief
+            thumb.style.opacity = "1";
+        } else {
+            thumb.style.border = "none";
+            thumb.style.opacity = "0.7";
+        }
+    });
+}
+
+
+
+// thumbnails maken
+items.forEach((item, index) => {
+    const thumb = document.createElement("div");
+    thumb.className = "thumb " + (item.kind === "youtube" ? "youtube" : "");
+    const src = item.kind === "youtube" 
+        ? `https://img.youtube.com/vi/${item.id}/hqdefault.jpg`
+        : photoPath + item.url;
+    thumb.innerHTML = `<img src="${src}" alt="thumb">`;
+    thumb.addEventListener("click", () => showItem(index));
+    gallery.appendChild(thumb);
+});
+
+// nav buttons
+document.getElementById("prevBtn").addEventListener("click", () => {
+    const newIndex = (currentIndex - 1 + items.length) % items.length;
+    showItem(newIndex);
+});
+document.getElementById("nextBtn").addEventListener("click", () => {
+    const newIndex = (currentIndex + 1) % items.length;
+    showItem(newIndex);
+});
+
+// Toon direct het eerste item bij laden
+showItem(0);
+</script>
+
+</body>
+</html>
