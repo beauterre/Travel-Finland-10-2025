@@ -4,49 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reisverslag Finland - dag -1</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 2em;
-            background-color: #f0f8ff;
-            color: #333;
-        }
-        h1, h2 {
-            color: #2a4d69;
-        }
-        .agenda {
-            list-style: none;
-            padding: 0;
-        }
-        .agenda li {
-            background: #d9e6f2;
-            margin: 0.5em 0;
-            padding: 0.8em;
-            border-radius: 8px;
-            transition: background 0.3s;
-        }
-        .agenda li:hover {
-            background: #aac8e0;
-        }
-        a {
-            text-decoration: none;
-            color: #1b3a57;
-            font-weight: bold;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .icoon {
-            margin-right: 0.5em;
-        }
-        #fotos {
-            margin-top: 2em;
-            padding: 1em;
-            background: #f2e6d9;
-            border-radius: 8px;
-        }
-        #fotos img {width: 100%;}
-    </style>
+              <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
 
@@ -56,6 +15,10 @@
     <a class="top-button" href="dag0.html">Volgende dag</a>
 </div>
 
+  <table>
+<tr>
+<td>
+  
 
     <h2>📅 Dag -1 - 30 september 2025</h2>
 
@@ -67,9 +30,41 @@
         <li>16:30 deze eerste pagina gemaakt en gepubliceerd met mijn telefoon. kost tijd :).. maar dat hebben we.</li>
     </ul>
 
+
+</td>
+<td>
+<div id="player"></div>
+<div id="nav-buttons">
+    <button id="prevBtn">← Prev</button>
+    <button id="nextBtn">Next →</button>
+    <button id="pictureFullScreen">⛶</button>
+</div>
+</td>
+</tr>
+</table>
+
+<h2>📷 Galerie</h2>
+<div id="gallery"></div>
+
+
+    <!-- Data -->
+<script>
+const photoPath = "./fotos/Dag-1/"; // basispad voor lokale foto's
+const items = [
+    { kind: "image", url: "Screenshot_20251002-083657.pngoverclouds.jpg<", setAsBackground:true }
+];
+</script>
+
+<script src="script.js"></script>
+    
+
+</body>
+</html>
+
+
     <h2>📷 fotos</h2>
     <div id="fotos">
-          <img src="fotos/Dag-1/Screenshot_20251002-083657.png">
+          <img src="">
     </div>
 
 </body>
