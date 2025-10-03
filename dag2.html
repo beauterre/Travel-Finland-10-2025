@@ -130,14 +130,14 @@
 <div id="gallery"></div>
 
 <script>
-const photoPath = "./fotos/Dag1/"; // basispad voor lokale foto's
+const photoPath = "./fotos/Dag2/"; // basispad voor lokale foto's
 
 // lijst met items: {kind:"youtube", id:""} of {kind:"image", url:""}
 const items = [
     { kind: "youtube", id: "A43-tQrrMqg" },
     { kind: "youtube", id: "YRjRyYFbbvg" },
     { kind: "youtube", id: "O4QRE43phjA" },
-    { kind: "image", url: "-------" }
+    { kind: "image", url: "4c99a9665607af522f1ed0409555d3b6.jpg", setAsBackground:true }
 ];
 
 const gallery = document.getElementById("gallery");
@@ -219,6 +219,12 @@ items.forEach((item, index) => {
     thumb.innerHTML = `<img src="${src}" alt="thumb">`;
     thumb.addEventListener("click", () => showItem(index));
     gallery.appendChild(thumb);
+
+     if (item.kind === "image" && item.setAsBackground) {
+        document.body.style.backgroundImage = `url(${photoPath + item.url})`;
+        document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundPosition = "center";
+    }
 });
 
 // nav buttons
