@@ -27,7 +27,7 @@ h1, h2 { color: #0c2f4f }
 
 
 a { text-decoration: none; color: #000; font-weight: bold; }
-a:hover { text-decoration: underline; background: #0f2e48; color: #020409; }
+a:hover { background: #0f2e48; color: #020409; }
 .icoon { margin-right: 0.5em; }
 
 #gallery {
