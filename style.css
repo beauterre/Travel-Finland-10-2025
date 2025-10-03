@@ -9,7 +9,6 @@ h1, h2 { color: #0c2f4f }
 .agenda li {
     background: rgba(200,200,200,0.5);
     margin: 0.5em 0;
-    padding: 0.8em;
     border-radius: 8px;
     transition: background 0.3s;
 }
