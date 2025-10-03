@@ -30,54 +30,35 @@
    <li>16:00 In Helsinki.. in de trein gepraat met Hongaren die kwamen immigreren. Allemaal dokters.. kluitje van 8.. </li>
     <li>19:15 ben in Omena hotel, heb broeken, shirt, onderbroeken, sokke twee tassen etc gekocht. en een laptop. nog steeds goedkoper dan koffers.. vreemde wereld. nu mediteren ben doodop. </li>
     <li>filmpjes komen morgen, nu te moe om de simkaart te wisselen enzo.. misschien na de meditatie. nope.. morgen</li></ul>
-        <h2>📷 videos</h2>
+
+<div id="player"></div>
+</td>
+</tr>
+</table>
+
+<h2>📷 Galerie</h2>
+<div id="gallery"></div>
 
 
-
-<div id="player">
-  <iframe allowfullscreen></iframe>
-</div>
-    <div id="videos"></div>
-
-        <h2>📷 fotos</h2>
-    <div id="fotos">
- geen foto's nog..
-    </div>
+    <!-- Data -->
 <script>
-// Zet hier je lijst met YouTube video IDs
-const videoIDs = [
-  "m-T2DhhYkAg", // vervang door echte ID's
-  "8S9dVEdzSzg",
-  "iH0Zi2JnjQM",
-    "7WQiskgvfKM",
-"2rXAnugty0M",
-    "eYM3Gh6n_Wk",
-"WmYTkuZsVbo",
-    "cmhFsg74jwI",
-    "qqsQH4stofc"
+const photoPath = "./fotos/Dag2/"; // basispad voor lokale foto's
+const items = [
+    { kind: "image", url: "Screenshot_20251003-191035.png" },
+    { kind: "youtube", id: "m-T2DhhYkAg" },
+    { kind: "youtube", id: "8S9dVEdzSzg" },
+    { kind: "youtube", id: "iH0Zi2JnjQM" },
+    { kind: "youtube", id: "7WQiskgvfKM" },
+    { kind: "youtube", id: "2rXAnugty0M" },
+    { kind: "youtube", id: "eYM3Gh6n_Wk" },
+    { kind: "youtube", id: "WmYTkuZsVbo" },
+    { kind: "youtube", id: "cmhFsg74jwI" },
+    { kind: "youtube", id: "qqsQH4stofc" },
+    { kind: "image", url: "IMG-20251003-WA0009.jpg", setAsBackground:true }
 ];
-    const fotos = [
-
-];
-
-const videosContainer = document.getElementById("videos");
-const player = document.getElementById("player");
-const iframe = player.querySelector("iframe");
-
-// thumbnails maken
-videoIDs.forEach(id => {
-  const thumb = document.createElement("div");
-  thumb.className = "video-thumb";
-  thumb.innerHTML = `<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="YouTube thumbnail">`;
-  thumb.addEventListener("click", () => {
-    iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-    player.style.display = "block";
-    player.scrollIntoView({behavior: "smooth"});
-  });
-  videosContainer.appendChild(thumb);
-});
 </script>
-    
+
+<script src="script.js"></script>
     
 
 </body>
