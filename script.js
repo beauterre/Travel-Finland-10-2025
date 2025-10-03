@@ -67,11 +67,15 @@ items.forEach((item, index) => {
     thumb.addEventListener("click", () => showItem(index));
     gallery.appendChild(thumb);
 
-    if (item.kind === "image" && item.setAsBackground) {
-        document.body.style.backgroundImage = `url(${photoPath + item.url})`;
-        document.body.style.backgroundSize = "cover";
-        document.body.style.backgroundPosition = "center";
-    }
+if (item.kind === "image" && item.setAsBackground) {
+    document.body.style.backgroundImage = `
+        linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.5)),
+        url(${photoPath + item.url})
+    `;
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+}
+
 });
 
 // nav buttons
