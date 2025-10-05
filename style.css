@@ -23,6 +23,7 @@ h1, h2 { color: #0c2f4f }
         }
         .future{opacity:0.9;}
         small{color: grey;}
+        .time{font-weight: 900;}
 
 .top-buttons-container {
     display: flex;
