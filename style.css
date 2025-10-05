@@ -27,7 +27,7 @@ h1, h2 { color: #0c2f4f }
   display: inline-block;
   font-family: "Segoe UI Mono", "Roboto Mono", "Courier New", monospace;
   font-weight: 900;
-  font-size: clamp(12px, 2.2vw, 18px); /* responsive */
+  font-size: clamp(6px, 2.2vw, 12px); /* responsive */
   letter-spacing: 0.02em;
   background: rgba(0,0,0,0.6);      /* semitransparent dark background */
   color: #e6f7ff;                   /* pale blue text for visibility */
