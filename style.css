@@ -5,69 +5,86 @@ body {
     color: #333;
 }
 h1, h2 { color: #0c2f4f }
-.agenda { list-style: none; padding: 0; }
+
+small { color: grey; }
+
+/* ——————————————————————————————
+   AGENDA LIST
+   —————————————————————————————— */
+.agenda {
+    list-style: none;
+    padding: 0;
+    margin: 1em 0;
+}
 .agenda li {
-    background: rgba(200,200,200,0.5);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5em;
+    padding: 0.6em 0.8em;
     margin: 0.5em 0;
+    background: rgba(200,200,200,0.4);
     border-radius: 8px;
     transition: background 0.3s;
 }
-        .thuisblijvers {
-            margin-top: 2em;
-            padding: 1em;
-            background: #f2e6d9;
-            border-radius: 8px;
-        }
-        .thuisblijvers li {
-            margin: 0.3em 0;
-        }
-        .future{opacity:0.9;}
-        .RaagiWeg{background:#fca000;}
-        small{color: grey;}
-.time {
-  display: inline-block;
-  font-family: "Segoe UI Mono", "Roboto Mono", "Courier New", monospace;
-  font-weight: 900;
-  font-size: clamp(6px, 2.2vw, 12px); /* responsive */
-  letter-spacing: 0.02em;
-  background: rgba(0,0,0,0.6);      /* semitransparent dark background */
-  color: #e6f7ff;                   /* pale blue text for visibility */
-  padding: 6px 10px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.06);
-  line-height: 1;
+.agenda li .time {
+    flex: 0 0 4em;
+    font-family: "Segoe UI Mono", "Roboto Mono", "Courier New", monospace;
+    font-weight: 900;
+    font-size: clamp(6px, 2.2vw, 12px);
+    letter-spacing: 0.02em;
+    background: rgba(0,0,0,0.6);
+    color: #e6f7ff;
+    padding: 6px 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.06);
+    line-height: 1;
+    text-align: right;
 }
-.agenda {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.agenda li > span.time + * {
+    flex: 1;
 }
-
-.agenda li {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 0.6em;
+.agenda li a {
+    display: block;
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
 }
-
-.agenda .time {
-  flex: 0 0 4em;        /* fixed width column for time */
-  font-weight: bold;
-  color: #666;
+.agenda li a:hover {
+    background: #0f2e48;
+    color: #fff;
+    cursor: pointer;
+}
+.agenda li.future {
+    background: rgba(200,200,200,0.2);
+    color: #666;
+    opacity: 0.6;
 }
 
-.agenda li span + * {
-  flex: 1;              /* text takes remaining space */
+/* ——————————————————————————————
+   OTHER BLOCKS
+   —————————————————————————————— */
+.thuisblijvers {
+    margin-top: 2em;
+    padding: 1em;
+    background: #f2e6d9;
+    border-radius: 8px;
 }
+.thuisblijvers li {
+    margin: 0.3em 0;
+}
+.future { opacity: 0.9; }
+.RaagiWeg { background: #fca000; }
 
 .top-buttons-container {
     display: flex;
-    gap: 8px;              /* ruimte tussen de knoppen */
+    gap: 8px;
     margin-bottom: 1em;
 }
-
 .top-button {
-    flex: 1;               /* elke knop neemt gelijke ruimte */
+    flex: 1;
     text-align: center;
     padding: 0.5em 0;
     background: #2a4d69;
@@ -77,45 +94,15 @@ h1, h2 { color: #0c2f4f }
     font-weight: bold;
     transition: background 0.3s;
 }
-
 .top-button:hover {
     background: #1b3a57;
 }
 
-.agenda {
-    list-style: none;
-    padding: 0;
-    margin: 1em 0;
-}
+.icoon { margin-right: 0.5em; }
 
-.agenda li a {
-    display: block;          /* maakt de link een blok */
-    width: 100%;             /* neemt hele li-breedte */
-    padding: 0.6em 0.8em;
-    background: rgba(200,200,200,0.4);
-    color: inherit;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background 0.3s, color 0.3s;
-    border-radius: 6px;      /* afgeronde hover */
-}
-
-.agenda li a:hover {
-    background: #0f2e48;
-    color: #fff;
-   cursor: pointer;
-}
-
-/* Toekomstige dagen: niet klikbaar, alpha */
-.agenda li.future {
-    background: rgba(200,200,200,0.2);
-    padding: 0.6em 0.8em;
-    color: #666;
-    opacity: 0.6;
-}
-
-        .icoon { margin-right: 0.5em; }
-
+/* ——————————————————————————————
+   GALLERY AND PLAYER
+   —————————————————————————————— */
 #gallery {
     margin: 0.2em auto;
     padding: 0.1em;
@@ -158,7 +145,6 @@ h1, h2 { color: #0c2f4f }
     margin: 2em auto;
     max-width: 560px;
     aspect-ratio: 9 / 16;
-    display: none;
     position: relative;
     background: #000;
     display: flex;
@@ -168,8 +154,9 @@ h1, h2 { color: #0c2f4f }
 #player img, #player iframe {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* letterbox */
+    object-fit: contain;
 }
+
 #nav-buttons {
     display: flex;
     justify-content: center;
@@ -185,4 +172,6 @@ h1, h2 { color: #0c2f4f }
     cursor: pointer;
     font-weight: bold;
 }
-#nav-buttons button:hover { background: #1b3a57; }
+#nav-buttons button:hover {
+    background: #1b3a57;
+}
