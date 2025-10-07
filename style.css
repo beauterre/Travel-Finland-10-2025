@@ -38,6 +38,28 @@ h1, h2 { color: #0c2f4f }
   border: 1px solid rgba(255,255,255,0.06);
   line-height: 1;
 }
+.agenda {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.agenda li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.6em;
+}
+
+.agenda .time {
+  flex: 0 0 4em;        /* fixed width column for time */
+  font-weight: bold;
+  color: #666;
+}
+
+.agenda li span + * {
+  flex: 1;              /* text takes remaining space */
+}
+
 .top-buttons-container {
     display: flex;
     gap: 8px;              /* ruimte tussen de knoppen */
