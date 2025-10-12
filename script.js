@@ -43,7 +43,7 @@ if (hasrotate != null) {
                 break;
             case 180:
                 player.style.transformOrigin = "center center";  // Default center origin again
-                translateX = "-50%";  // Move left 50% to simulate rotating around center
+                translateX = 0;  // Move left 50% to simulate rotating around center
                 translateY = 0;  // No vertical shift
                 break;
             case 270:
