@@ -36,16 +36,16 @@ if (hasrotate != null) {
                 translateY = 0;
                 break;
             case 90:
-                translateX = "50%";  // No horizontal shift
-                translateY = "-150px";  // Move up 50% to make the top the center of rotation
+                translateX = "0%";  // No horizontal shift
+                translateY = "150px";  // Move up 50% to make the top the center of rotation
                 break;
             case 180:
                 translateX = 0;  // Move left 50% to simulate rotating around center
                 translateY = 0;  // No vertical shift
                 break;
             case 270:
-                translateX = "50%";  // No horizontal shift
-                translateY = "150px";  // Move up 50% to make the top the center of rotation
+                translateX = "0%";  // No horizontal shift
+                translateY = "-150px";  // Move up 50% to make the top the center of rotation
                 break;
         }
 
