@@ -17,7 +17,7 @@ let rotationAngle = 0; // Keep track of the current rotation angle
 const rotateButton = document.getElementById("pictureRotate90");
 
 // Log if the button exists
-console.log("Rotate button present: ", rotateButton !== null);
+console.log("Rotate button found: ", rotateButton !== null);
 
 if (rotateButton !== null) {
     rotateButton.addEventListener("click", () => {
