@@ -371,7 +371,16 @@
             }
 
             // Adjust scaling on rotate
-            modalMedia.querySelector('img, iframe').style.transform = `rotate(${rotationAngle}deg)`;
+            // Check if the rotation angle is 90 or 270 degrees, then adjust width/height
+                if (rotationAngle === 90 || rotationAngle === 270) {
+                    mediaElement.style.width = "auto";    // Set width to auto to let height control
+                    mediaElement.style.height = "80vh";   // Limit height for better scaling
+                    mediaElement.style.maxWidth = "100%"; // Ensure it doesn't overflow the container
+                } else {
+                    // Default scale for non-rotated media
+                    mediaElement.style.width = "100%";    // Let width control the scaling
+                    mediaElement.style.height = "auto";   // Keep aspect ratio intact
+                }
         }
 
         // Rotate button functionality
