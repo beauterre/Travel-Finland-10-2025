@@ -16,7 +16,7 @@ let rotationAngle = 0;
 
 // Rotate button event listener
 var hasrotate = document.getElementById("pictureRotate90");
-console.log("hook up rotate" + hasrotate);
+console.log("hasrotate" + hasrotate);
 
 if (hasrotate != null) {
     hasrotate.addEventListener("click", () => {
@@ -38,8 +38,8 @@ if (hasrotate != null) {
                 break;
             case 90:
                 player.style.transformOrigin = "top center";  // Rotate around top-center
-                translateX = "-50%";  // No horizontal shift
-                translateY = 0;  // Move up 50% to make the top the center of rotation
+                translateX = "50%";  // No horizontal shift
+                translateY = "-150px";  // Move up 50% to make the top the center of rotation
                 break;
             case 180:
                 player.style.transformOrigin = "center center";  // Default center origin again
@@ -48,8 +48,8 @@ if (hasrotate != null) {
                 break;
             case 270:
                 player.style.transformOrigin = "bottom center";  // Rotate around bottom-center
-                translateX = 0;  // No horizontal shift
-                translateY = "50%";  // Move down 50% to make the bottom the center of rotation
+                translateX = "50%";  // No horizontal shift
+                translateY = "150px";  // Move up 50% to make the top the center of rotation
                 break;
         }
 
