@@ -12,8 +12,6 @@ document.getElementById("pictureFullScreen").addEventListener("click", () => {
 });
 
 let rotationAngle = 0; // Keep track of the current rotation angle
-// Get the player element
-const player = document.getElementById("player");
 
 // Check if the rotate button exists
 const rotateButton = document.getElementById("pictureRotate90");
