@@ -367,6 +367,8 @@
         mediaElement.frameborder = "0";
         mediaElement.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
         mediaElement.allowfullscreen = true;
+         // Make video iframe larger if it's a YouTube video
+        mediaElement.style.maxHeight = '90vh'; // Adjust this if needed
     }
 
     // Append media to modal
