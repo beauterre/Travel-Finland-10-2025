@@ -154,6 +154,7 @@ const formattedDate = `${current.getDate()} ${monthsNL[current.getMonth()]} ${cu
 
 // Build title
 const title = `🇫🇮 Reisverslag Finland 📅 Dag ${dag} (${formattedDate})`;
+      document.title = title;
 let h1=document.createElement("h1");
       h1.innerText=title;
       document.body.appendChild(h1);
