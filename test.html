@@ -5,47 +5,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gallery with Lightbox and Controls</title>
 <style>
-body {font-family: Arial, sans-serif; margin:0; background:#f0f8ff;}
+body {margin:0; font-family:sans-serif; background:#f0f8ff;}
 h1 {text-align:center; margin:20px auto;}
 #gallery {
-  display:flex; flex-wrap:nowrap; gap:1rem; padding:20px;
-  width:calc(100% - 20px); overflow-x:auto; overflow-y:hidden;
+  display:flex; overflow-x:auto; gap:1rem; padding:20px;
   box-shadow:inset 0 4px 10px rgba(0,0,0,0.2);
-  max-height:60vh;
 }
-#gallery .thumb {
-  min-width:150px; max-width:150px; height:150px; flex-shrink:0;
-  border-radius:8px; overflow:hidden; cursor:pointer;
+.thumb {
+  flex:0 0 150px; height:150px; border-radius:8px;
+  overflow:hidden; cursor:pointer; position:relative;
   box-shadow:0 4px 10px rgba(0,0,0,0.2);
-  position:relative;
 }
 .thumb img {width:100%; height:100%; object-fit:cover;}
 .thumb.video .play-btn {
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:40px; height:40px; border-radius:50%; background:rgba(0,0,0,0.7);
-  color:#fff; display:flex; align-items:center; justify-content:center;
+  width:40px; height:40px; border-radius:50%;
+  background:rgba(0,0,0,0.7); color:white;
+  display:flex; align-items:center; justify-content:center;
   font-size:20px; pointer-events:none;
 }
 .modal {
   display:none; position:fixed; inset:0;
-  background:rgba(0,0,0,0.8); justify-content:center; align-items:center;
-  z-index:1000;
+  background:rgba(0,0,0,0.8);
+  justify-content:center; align-items:center; z-index:1000;
 }
 .modal-content {
-  position:relative; background:#fff; padding:20px;
-  border-radius:12px; text-align:center; overflow:hidden;
+  position:relative; background:#fff; border-radius:12px;
+  text-align:center; overflow:hidden; transition:all 0.3s ease;
   display:flex; justify-content:center; align-items:center;
-  max-width:90vw; max-height:90vh;
-  transition:width 0.3s,height 0.3s;
+  padding:10px;
 }
 #modal-media img, #modal-media iframe {
-  max-width:100%; max-height:80vh; object-fit:contain;
-  transition:transform 0.3s ease-in-out;
+  max-width:90vw; max-height:85vh; object-fit:contain;
+  transition:transform 0.3s ease;
+  display:block;
 }
 .close-btn {
-  position:absolute; top:10px; right:10px; font-size:30px;
-  width:30px; height:30px; background:#fff; border-radius:15px;
-  cursor:pointer; z-index:10;
+  position:absolute; top:10px; right:10px; background:#fff;
+  width:30px; height:30px; border-radius:50%; font-size:24px;
+  line-height:26px; cursor:pointer; z-index:10;
 }
 .controls {
   position:absolute; top:10px; left:50%; transform:translateX(-50%);
@@ -53,15 +51,14 @@ h1 {text-align:center; margin:20px auto;}
 }
 .control-btn {
   background:rgba(0,0,0,0.6); color:white; border:none;
-  padding:10px; font-size:18px; cursor:pointer;
-  border-radius:50%; width:40px; height:40px;
-  display:flex; justify-content:center; align-items:center;
+  width:40px; height:40px; border-radius:50%; font-size:18px;
+  cursor:pointer; display:flex; justify-content:center; align-items:center;
 }
 .control-btn:hover {background:rgba(0,0,0,0.9);}
 </style>
 </head>
 <body>
-<h1>Gallery with Lightbox and Controls new</h1>
+<h1>Gallery with Lightbox and Controls</h1>
 <div id="gallery"></div>
 
 <div id="modal" class="modal">
@@ -81,111 +78,97 @@ const photoPath = "./fotos/Dag9/";
 const items = [
   { kind:"image", url:"Screenshot_20251010-175907.png" },
   { kind:"youtube", id:"JYt82UGhnOM" },
-  { kind:"youtube", id:"uk500H2d274" },
   { kind:"image", url:"IMG-20251010-WA0003.jpeg" }
 ];
 
-let currentIndex = -1;
-let rotationAngle = 0;
+let currentIndex=-1, rotationAngle=0;
+const gallery=document.getElementById('gallery');
+const modal=document.getElementById('modal');
+const modalMedia=document.getElementById('modal-media');
+const modalContent=document.querySelector('.modal-content');
+const rotateBtn=document.getElementById('rotateBtn');
+const prevBtn=document.getElementById('prevBtn');
+const nextBtn=document.getElementById('nextBtn');
+const closeBtn=document.getElementById('closeBtn');
 
-const gallery = document.getElementById('gallery');
-const modal = document.getElementById('modal');
-const modalMedia = document.getElementById('modal-media');
-const rotateBtn = document.getElementById('rotateBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const closeBtn = document.getElementById('closeBtn');
-const modalContent = document.querySelector('.modal-content');
-
-// Build gallery thumbnails
-items.forEach((item, i) => {
-  const thumb = document.createElement('div');
-  thumb.classList.add('thumb');
-  const img = document.createElement('img');
-  if(item.kind === 'image') {
-    img.src = photoPath + item.url;
-  } else {
-    img.src = `https://img.youtube.com/vi/${item.id}/0.jpg`;
-    thumb.classList.add('video');
-    const playBtn = document.createElement('div');
-    playBtn.classList.add('play-btn');
-    playBtn.innerHTML = '▶';
-    thumb.appendChild(playBtn);
+// build thumbnails
+items.forEach((item,i)=>{
+  const t=document.createElement('div');
+  t.className='thumb'+(item.kind==='youtube'?' video':'');
+  const img=document.createElement('img');
+  img.src=item.kind==='image'?photoPath+item.url:`https://img.youtube.com/vi/${item.id}/0.jpg`;
+  img.dataset.index=i;
+  if(item.kind==='youtube'){
+    const play=document.createElement('div');
+    play.className='play-btn'; play.textContent='▶';
+    t.appendChild(play);
   }
-  img.dataset.index = i;
-  thumb.appendChild(img);
-  gallery.appendChild(thumb);
+  t.appendChild(img);
+  gallery.appendChild(t);
 });
 
-gallery.addEventListener('click', e => {
-  const target = e.target.closest('.thumb img');
-  if(!target) return;
-  currentIndex = parseInt(target.dataset.index);
-  rotationAngle = 0;
+gallery.addEventListener('click',e=>{
+  const img=e.target.closest('img');
+  if(!img)return;
+  currentIndex=parseInt(img.dataset.index);
+  rotationAngle=0;
   showMedia(currentIndex);
-  modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
+  modal.style.display='flex';
+  document.body.style.overflow='hidden';
 });
 
-// FIX: Maintain rotation & dynamic resizing
-function showMedia(index) {
-  const item = items[index];
-  modalMedia.innerHTML = '';
+function showMedia(i){
+  modalMedia.innerHTML='';
+  const item=items[i];
   let el;
-  if(item.kind === 'image') {
-    el = document.createElement('img');
-    el.src = photoPath + item.url;
+  if(item.kind==='image'){
+    el=document.createElement('img');
+    el.src=photoPath+item.url;
   } else {
-    el = document.createElement('iframe');
-    el.src = `https://www.youtube.com/embed/${item.id}?autoplay=1`;
-    el.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
-    el.allowFullscreen = true;
-    // FIX: enforce large visible size
-    el.style.width = '80vw';
-    el.style.height = '45vw'; // 16:9 ratio
-    el.style.maxHeight = '80vh';
+    el=document.createElement('iframe');
+    el.src=`https://www.youtube.com/embed/${item.id}?autoplay=1`;
+    el.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    el.allowFullscreen=true;
+    el.style.aspectRatio='16/9';
+    el.style.border='none';
   }
-  el.style.transform = `rotate(${rotationAngle}deg)`;
+  el.style.transform=`rotate(${rotationAngle}deg)`;
   modalMedia.appendChild(el);
-  adjustModalSize(rotationAngle);
+  requestAnimationFrame(()=>fitModalToContent(el));
 }
 
-// FIX: Rotation without reloading media
-rotateBtn.addEventListener('click', () => {
-  rotationAngle = (rotationAngle + 90) % 360;
-  const el = modalMedia.firstElementChild;
-  if(!el) return;
-  el.style.transform = `rotate(${rotationAngle}deg)`;
-  adjustModalSize(rotationAngle);
+rotateBtn.addEventListener('click',()=>{
+  rotationAngle=(rotationAngle+90)%360;
+  const el=modalMedia.firstElementChild;
+  if(!el)return;
+  el.style.transform=`rotate(${rotationAngle}deg)`;
+  fitModalToContent(el);
 });
 
-function adjustModalSize(angle) {
-  if(angle === 90 || angle === 270) {
-    modalContent.style.width = '80vh'; // flip width/height
-    modalContent.style.height = '80vw';
-  } else {
-    modalContent.style.width = '80vw';
-    modalContent.style.height = 'auto';
-  }
-}
+nextBtn.addEventListener('click',()=>{currentIndex=(currentIndex+1)%items.length;rotationAngle=0;showMedia(currentIndex);});
+prevBtn.addEventListener('click',()=>{currentIndex=(currentIndex-1+items.length)%items.length;rotationAngle=0;showMedia(currentIndex);});
+closeBtn.addEventListener('click',closeModal);
+window.addEventListener('click',e=>{if(e.target===modal)closeModal();});
+function closeModal(){modal.style.display='none';document.body.style.overflow='auto';modalMedia.innerHTML='';}
 
-nextBtn.addEventListener('click', () => {
-  currentIndex = (currentIndex + 1) % items.length;
-  rotationAngle = 0;
-  showMedia(currentIndex);
-});
-prevBtn.addEventListener('click', () => {
-  currentIndex = (currentIndex - 1 + items.length) % items.length;
-  rotationAngle = 0;
-  showMedia(currentIndex);
-});
-closeBtn.addEventListener('click', closeModal);
-window.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+// dynamically fit modal to rotated element
+function fitModalToContent(el){
+  const vw=window.innerWidth, vh=window.innerHeight;
+  const naturalW = el.videoWidth || el.naturalWidth || el.clientWidth;
+  const naturalH = el.videoHeight || el.naturalHeight || el.clientHeight;
 
-function closeModal() {
-  modal.style.display = 'none';
-  document.body.style.overflow = 'auto';
-  modalMedia.innerHTML = '';
+  // compute rotated box dimensions
+  const rad = rotationAngle*Math.PI/180;
+  const rotW = Math.abs(naturalW*Math.cos(rad)) + Math.abs(naturalH*Math.sin(rad));
+  const rotH = Math.abs(naturalW*Math.sin(rad)) + Math.abs(naturalH*Math.cos(rad));
+
+  // scale down if too big
+  const scale = Math.min(vw*0.9/rotW, vh*0.9/rotH, 1);
+  const w = rotW*scale;
+  const h = rotH*scale;
+
+  modalContent.style.width = w + 'px';
+  modalContent.style.height = h + 'px';
 }
 </script>
 </body>
