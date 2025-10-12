@@ -156,7 +156,7 @@ const formattedDate = `${current.getDate()} ${monthsNL[current.getMonth()]} ${cu
 const title = `<h1>🇫🇮 Reisverslag Finland 📅 Dag ${dag} (${formattedDate})</h1>`;
 let h1=document.createElement("h1");
       h1.innerText=title;
-      document.appendChild(h1);
+      document.body.appendChild(h1);
     }
   renderTitle();
   function renderAgenda() 
