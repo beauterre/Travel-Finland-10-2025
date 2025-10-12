@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery with Lightbox and Controls</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            justify-items: center;
+            padding: 20px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .thumb {
+            position: relative;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .thumb img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* Modal (Lightbox) Styles */
+        .modal {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background: #fff;
+            padding: 20px;
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        #modal-media {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        #modal-media img, #modal-media iframe {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .rotate-btn {
+            font-size: 22px;
+        }
+
+        .next-prev-btn {
+            font-size: 24px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Gallery with Lightbox and Controls</h1>
+
+    <!-- Gallery Section -->
+    <div id="gallery"></div>
+
+    <!-- Modal (Lightbox) -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="closeBtn" class="close-btn">&times;</span>
+            <div id="modal-media"></div>
+            <div class="controls">
+                <button id="prevBtn" class="control-btn next-prev-btn">❮</button>
+                <button id="rotateBtn" class="control-btn rotate-btn">🔄</button>
+                <button id="nextBtn" class="control-btn next-prev-btn">❯</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Script -->
+    <script>
+        const photoPath = "./fotos/Dag9/"; // base path for local photos
+        const items = [
+            { kind: "image", url: "Screenshot_20251010-175907.png" },
+            { kind: "youtube", id: "JYt82UGhnOM" },
+            { kind: "youtube", id: "uk500H2d274" },
+            { kind: "image", url: "IMG-20251010-WA0003.jpeg" },
+            { kind: "image", url: "IMG-20251010-WA0005.jpeg" }
+            // Add more items here...
+        ];
+
+        let currentIndex = -1; // Track current media index
+        let rotationAngle = 0; // Rotation angle state
+
+        const gallery = document.getElementById('gallery');
+        const modal = document.getElementById('modal');
+        const closeBtn = document.getElementById('closeBtn');
+        const modalMedia = document.getElementById('modal-media');
+        const rotateBtn = document.getElementById('rotateBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Loop through items to create gallery thumbnails
+        items.forEach((item, index) => {
+            const thumb = document.createElement('div');
+            thumb.classList.add('thumb');
+            
+            if (item.kind === 'image') {
+                const img = document.createElement('img');
+                img.src = photoPath + item.url;
+                img.alt = item.url;
+                img.classList.add('gallery-item');
+                img.dataset.type = 'image';
+                img.dataset.src = photoPath + item.url;
+                img.dataset.index = index; // Save index
+                thumb.appendChild(img);
+            } else if (item.kind === 'youtube') {
+                const img = document.createElement('img');
+                img.src = `https://img.youtube.com/vi/${item.id}/0.jpg`; // YouTube thumbnail
+                img.alt = "YouTube Video";
+                img.classList.add('gallery-item');
+                img.dataset.type = 'video';
+                img.dataset.src = item.id;
+                img.dataset.index = index; // Save index
+                thumb.appendChild(img);
+            }
+
+            gallery.appendChild(thumb);
+        });
+
+        // Open modal on thumbnail click
+        gallery.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.classList.contains('gallery-item')) {
+                currentIndex = parseInt(target.dataset.index);
+                showMedia(currentIndex);
+                modal.style.display = 'flex';
+            }
+        });
+
+        // Show media in modal
+        function showMedia(index) {
+            const item = items[index];
+            const type = item.kind;
+            const src = item.kind === 'image' ? item.url : item.id;
+
+            // Clear previous content
+            modalMedia.innerHTML = '';
+
+            // Add media based on type
+            if (type === 'image') {
+                const img = document.createElement('img');
+                img.src = photoPath + src;
+                modalMedia.appendChild(img);
+            } else if (type === 'youtube') {
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${src}?autoplay=1`;
+                iframe.allowFullscreen = true;
+                modalMedia.appendChild(iframe);
+            }
+
+            // Reset rotation angle for new content
+            rotationAngle = 0;
+            modalMedia.querySelector('img, iframe').style.transform = `rotate(${rotationAngle}deg)`;
+        }
+
+        // Rotate media
+        rotateBtn.addEventListener('click', () => {
+            rotationAngle = (rotationAngle + 90) % 360;
+            const media = modalMedia.querySelector('img, iframe');
+            media.style.transform = `rotate(${rotationAngle}deg)`;
+        });
+
+        // Navigate to the next media
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % items.length;
+            showMedia(currentIndex);
+        });
+
+        // Navigate to the previous media
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + items.length) % items.length;
+            showMedia(currentIndex);
+        });
+
+        // Close modal on close button click
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Close modal if clicked outside of the media content
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
