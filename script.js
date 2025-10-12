@@ -11,48 +11,52 @@ document.getElementById("pictureFullScreen").addEventListener("click", () => {
     }
 });
 
-let rotationAngle = 0; // Keep track of the current rotation angle
+// Initial rotation angle
+let rotationAngle = 0;
 
-// Check if the rotate button exists
-const rotateButton = document.getElementById("pictureRotate90");
+// Rotate button event listener
+var hasrotate = document.getElementById("pictureRotate90");
+console.log("hook up rotate" + hasrotate);
 
-// Log if the button exists
-console.log("Rotate button found: ", rotateButton !== null);
-
-if (rotateButton !== null) {
-    rotateButton.addEventListener("click", () => {
-        console.log("Rotate button clicked");
-
-        // Initialize rotation angle (if not already)
-        if (typeof rotationAngle === "undefined") {
-            rotationAngle = 0;  // Start at 0 degrees
-        }
-
+if (hasrotate != null) {
+    hasrotate.addEventListener("click", () => {
+        console.log("hook up rotate");
+        
         // Update the rotation angle by 90 degrees, looping back after 360
         rotationAngle = (rotationAngle + 90) % 360;
 
-        switch(rotationAngle)
-        {
-            case 0: 
-                player.style.transformOrigin="center center";  // Set the rotation point
-            break; 
-            case 90: 
-                player.style.transformOrigin="top center";  // Set the rotation point
-            break; 
-            case 180: 
-                player.style.transformOrigin="center center";  // Set the rotation point
-            break; 
-            case 270: 
-                player.style.transformOrigin="bottom center";  // Set the rotation point
-            break; 
-        }
-        // Apply the rotation and set the transform-origin to center
-        player.style.transform = `rotate(${rotationAngle}deg)`;
-        player.style.transformOrigin = "center center";
+        // Apply different translations based on the rotation angle
+        let translateX = 0;
+        let translateY = 0;
 
+        // Calculate translation and rotation based on the angle
+        switch (rotationAngle) {
+            case 0:
+                player.style.transformOrigin = "center center";  // Default center origin
+                translateX = 0;
+                translateY = 0;
+                break;
+            case 90:
+                player.style.transformOrigin = "top center";  // Rotate around top-center
+                translateX = 0;  // No horizontal shift
+                translateY = "-50%";  // Move up 50% to make the top the center of rotation
+                break;
+            case 180:
+                player.style.transformOrigin = "center center";  // Default center origin again
+                translateX = "-50%";  // Move left 50% to simulate rotating around center
+                translateY = 0;  // No vertical shift
+                break;
+            case 270:
+                player.style.transformOrigin = "bottom center";  // Rotate around bottom-center
+                translateX = 0;  // No horizontal shift
+                translateY = "50%";  // Move down 50% to make the bottom the center of rotation
+                break;
+        }
+
+        // Apply the combined transform to rotate and translate smoothly
+        player.style.transition = "transform 0.3s ease-in-out"; // Smooth transition
+        player.style.transform = `rotate(${rotationAngle}deg) translate(${translateX}, ${translateY})`;
     });
-} else {
-    console.log("Rotate button not found");
 }
 
 let currentIndex = 0;
