@@ -157,6 +157,13 @@ const title = `🇫🇮 Reisverslag Finland 📅 Dag ${dag} (${formattedDate})`;
 let h1=document.createElement("h1");
       h1.innerText=title;
       document.body.appendChild(h1);
+
+var buttons_html='<div class="top-buttons-container">
+    <a class="top-button" href="index.html">Terug naar de agenda</a><a class="top-button" href="dag'+(dag-1)+'.html">Vorige dag</a><a class="top-button" href="dag'+(dag+1)+'.html">Volgende dag</a></div>';
+let div=document.createElement("div");
+      div.innerHTML=buttons_html;
+      document.body.appendChild(div);
+      
     }
   renderTitle();
   function renderAgenda() 
