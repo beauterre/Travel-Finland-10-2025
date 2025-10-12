@@ -99,6 +99,12 @@ function showItem(index) {
         }
     });
 }
+// if no items, hide player.
+if(items.length==0)
+{
+    player.style.display="none";
+}
+
 
 // thumbnails maken
 items.forEach((item, index) => {
