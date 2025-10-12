@@ -12,18 +12,37 @@ document.getElementById("pictureFullScreen").addEventListener("click", () => {
 });
 
 let rotationAngle = 0; // Keep track of the current rotation angle
+// Get the player element
+const player = document.getElementById("player");
 
-// Rotate button event listener
-var hasrotate=document.getElementById("pictureRotate90");
-console.log("hook up rotate"+hasrotate);
+// Check if the rotate button exists
+const rotateButton = document.getElementById("pictureRotate90");
 
-if(hasrotate!=null)
-    hasrotate.addEventListener("click", () => {
-    console.log("hook up rotate");
-    rotationAngle = (rotationAngle + 90) % 360;  // Increment by 90 degrees (loop back after 360)
-    player.style.transform = `rotate(${rotationAngle}deg)`;  // Apply the rotation
-    player.style.transformOrigin = "center center";  // Rotate around the center of the player
-});
+// Log if the button exists
+console.log("Rotate button present: ", rotateButton !== null);
+
+if (rotateButton !== null) {
+    rotateButton.addEventListener("click", () => {
+        console.log("Rotate button clicked");
+
+        // Initialize rotation angle (if not already)
+        if (typeof rotationAngle === "undefined") {
+            rotationAngle = 0;  // Start at 0 degrees
+        }
+
+        // Update the rotation angle by 90 degrees, looping back after 360
+        rotationAngle = (rotationAngle + 90) % 360;
+
+        // Apply the rotation and set the transform-origin to center
+        player.style.transform = `rotate(${rotationAngle}deg)`;
+        player.style.transformOrigin = "center center";
+
+        // Optionally log the angle for debugging
+        console.log(`Player rotated to ${rotationAngle} degrees`);
+    });
+} else {
+    console.log("Rotate button not found");
+}
 
 let currentIndex = 0;
 
