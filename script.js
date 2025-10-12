@@ -11,6 +11,16 @@ document.getElementById("pictureFullScreen").addEventListener("click", () => {
     }
 });
 
+let rotationAngle = 0; // Keep track of the current rotation angle
+
+// Rotate button event listener
+var hasrotate=document.getElementById("pictureRotate90"),
+if(hasrotate)hasrotate.addEventListener("click", () => {
+    rotationAngle = (rotationAngle + 90) % 360;  // Increment by 90 degrees (loop back after 360)
+    player.style.transform = `rotate(${rotationAngle}deg)`;  // Apply the rotation
+    player.style.transformOrigin = "center center";  // Rotate around the center of the player
+});
+
 let currentIndex = 0;
 
 function fixPlayerAspect(img) {
