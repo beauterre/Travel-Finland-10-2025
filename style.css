@@ -13,18 +13,21 @@ small { color: grey; }
   gap: 2rem;
   align-items: flex-start;
   margin: 2rem 0;
+  flex-wrap: nowrap;  /* Voorkom dat de kolommen naar beneden vallen */
+  max-width: 1200px;  /* Limiteer de breedte van de container */
+  width: 100%;
+  margin: 0 auto;  /* Centreer de container */
 }
 
 .agenda-column {
-  flex: 2; /* takes more space */
-  max-width: 100%;
+  flex: 2; /* Neem 2/3 van de ruimte */
+  max-width: 100%; /* Zorg dat de agenda-kolom zich aanpast binnen zijn flexwaarde */
 }
 
 .player-column {
-  flex: 1; /* smaller than agenda */
-  max-width: 300px;
+  flex: 1; /* Neem 1/3 van de ruimte */
+  max-width: 300px; /* Maximaliseer de breedte van de player-kolom, maar laat het niet breder worden */
 }
-
 
 /* ——————————————————————————————
    AGENDA LIST
