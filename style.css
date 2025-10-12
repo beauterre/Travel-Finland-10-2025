@@ -29,6 +29,23 @@ small { color: grey; }
   max-width: 300px; /* Maximaliseer de breedte van de player-kolom, maar laat het niet breder worden */
 }
 
+/* Responsieve aanpassing: bij smalle schermen zetten we de kolommen onder elkaar */
+@media (max-width: 768px) {
+    .flex-container {
+        flex-direction: column; /* Zet de kolommen onder elkaar */
+        gap: 1rem; /* Kleinere gap tussen de kolommen */
+    }
+
+    .agenda-column,
+    .player-column {
+        max-width: 100%; /* Laat beide kolommen zich volledig uitbreiden */
+    }
+
+    .player-column {
+        margin-top: 1rem; /* Eventueel wat ruimte boven de player */
+    }
+}
+
 /* ——————————————————————————————
    AGENDA LIST
    —————————————————————————————— */
