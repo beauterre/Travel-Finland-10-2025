@@ -38,8 +38,8 @@ if (hasrotate != null) {
                 break;
             case 90:
                 player.style.transformOrigin = "top center";  // Rotate around top-center
-                translateX = 0;  // No horizontal shift
-                translateY = "-50%";  // Move up 50% to make the top the center of rotation
+                translateX = "-50%";  // No horizontal shift
+                translateY = 0;  // Move up 50% to make the top the center of rotation
                 break;
             case 180:
                 player.style.transformOrigin = "center center";  // Default center origin again
