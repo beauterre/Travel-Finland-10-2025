@@ -376,7 +376,7 @@
 
     // Adjust scaling and rotation
     mediaElement.style.transform = `rotate(${rotationAngle}deg)`;
-
+console.log("rotationAngle "+rotationAngle);
     // Check if the rotation angle is 90 or 270 degrees, then adjust width/height
     if (rotationAngle === 90 || rotationAngle === 270) {
         mediaElement.style.width = "auto";    // Set width to auto to let height control
