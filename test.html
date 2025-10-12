@@ -8,7 +8,7 @@
   :root { --overlay-pad: 0.05; } /* 5% padding each side */
   body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f0f8ff; }
   h1 { text-align:center; margin:18px 0; }
-  #gallery { display:flex; gap:12px; padding:16px; overflow-x:auto; }
+  #gallery { display:flex; gap:12px; padding:16px; overflow-x:auto; box-shadow: inset 0 4px 10px rgba(0,0,0,.15); }
   .thumb { flex:0 0 150px; height:100px; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,.15); cursor:pointer; position:relative; }
   .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
   .thumb.video .play-btn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:40px; height:40px; border-radius:50%; background:rgba(0,0,0,.65); color:#fff; display:flex; align-items:center; justify-content:center; pointer-events:none; }
