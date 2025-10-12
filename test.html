@@ -1,319 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Modal Lightbox — JS-fit rotated media</title>
-<style>
-  :root { --overlay-pad: 0.05; } /* 5% padding each side */
-  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#f0f8ff; }
-  h1 { text-align:center; margin:18px 0; }
-  #gallery { display:flex; gap:12px; padding:16px; overflow-x:auto; box-shadow: inset 0 4px 10px rgba(0,0,0,.15); }
-  .thumb { flex:0 0 150px; height:100px; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,.15); cursor:pointer; position:relative; }
-  .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-  .thumb.video .play-btn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:40px; height:40px; border-radius:50%; background:rgba(0,0,0,.65); color:#fff; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery with Lightbox and Rotation Memory</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f0f8ff;
+    }
+    h1 {
+      text-align: center;
+      margin: 20px;
+    }
+    #gallery {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 1rem;
+      padding: 20px;
+      margin: 20px 10px 0 10px;
+      width: calc(100% - 20px);
+      box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.2);
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-height: 60vh;
+    }
+    #gallery::-webkit-scrollbar { height: 8px; }
+    #gallery::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+    #gallery::-webkit-scrollbar-thumb:hover { background: #555; }
 
-  /* Modal */
-  .modal { position:fixed; inset:0; display:none; background:rgba(0,0,0,.85); justify-content:center; align-items:center; z-index:9999; }
-  .modal-content {
-    position:relative;
-    background:#fff;
-    border-radius:12px;
-    overflow:visible; /* media is rotated, we control container size */
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:8px;
-    box-sizing:border-box;
-    /* NO max-width/height interfering — JS sets exact px */
-  }
-  #modal-media { display:block; transform-origin:center center; } /* element gets rotated */
-  .close-btn { position:absolute; right:10px; top:10px; background:#fff; border-radius:50%; width:34px; height:34px; text-align:center; line-height:34px; font-size:20px; cursor:pointer; z-index:20; }
-  .controls { position:absolute; top:10px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:20; }
-  .control-btn { width:40px; height:40px; border-radius:50%; background:rgba(0,0,0,.6); color:#fff; border:none; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
-</style>
+    .thumb {
+      position: relative;
+      min-width: 150px;
+      max-width: 150px;
+      height: 150px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .thumb .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      border-radius: 50%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      pointer-events: none;
+    }
+    .thumb.video .play-btn { display: flex; }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      position: relative;
+      background: #fff;
+      border-radius: 12px;
+      overflow: visible;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 30px;
+      color: #333;
+      cursor: pointer;
+      background: white;
+      border-radius: 15px;
+      z-index: 10;
+      width: 30px;
+      height: 30px;
+      line-height: 26px;
+      text-align: center;
+    }
+    #modal-media img, #modal-media iframe {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s ease-in-out;
+    }
+    .controls {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+    .control-btn {
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.3s;
+    }
+    .control-btn:hover { background: rgba(0, 0, 0, 0.9); }
+  </style>
 </head>
 <body>
-  <h1>Gallery with proper rotated modal sizing</h1>
+  <h1>Gallery with Lightbox and Controls</h1>
   <div id="gallery"></div>
 
-  <div id="modal" class="modal" aria-hidden="true">
-    <div class="modal-content" id="modalContent">
-      <span id="closeBtn" class="close-btn" title="Close">&times;</span>
-      <!-- media element inserted here -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span id="closeBtn" class="close-btn">&times;</span>
       <div id="modal-media"></div>
       <div class="controls">
-        <button id="prevBtn" class="control-btn" title="Previous">❮</button>
-        <button id="rotateBtn" class="control-btn" title="Rotate">🔄</button>
-        <button id="nextBtn" class="control-btn" title="Next">❯</button>
+        <button id="prevBtn" class="control-btn">❮</button>
+        <button id="rotateBtn" class="control-btn">🔄</button>
+        <button id="nextBtn" class="control-btn">❯</button>
       </div>
     </div>
   </div>
 
-<script>
-/* ---------- Data ---------- */
-const photoPath = "./fotos/Dag9/";
-const items = [
-  { kind: "image", url: "Screenshot_20251010-175907.png" }, 
+  <script>
+    const photoPath = "./fotos/Dag9/";
+    const items = [
+      { kind: "image", url: "Screenshot_20251010-175907.png" },
+      { kind: "youtube", id: "JYt82UGhnOM" },
+      { kind: "youtube", id: "uk500H2d274" }
+    ];
 
-  { kind: "youtube", id: "JYt82UGhnOM" }, 
-  { kind: "youtube", id: "uk500H2d274" }, 
-  { kind: "youtube", id: "2fGf_YFchRM" }, 
-  { kind: "youtube", id: "znYZmf6yetA" }, 
-  { kind: "youtube", id: "1JZkNYbJpjw" }, 
-  { kind: "youtube", id: "d7wIWFS-U8s" }, 
-  { kind: "youtube", id: "RNxJ1nIHrvk" }, 
-  { kind: "youtube", id: "_12uPhPoj3c" }, 
-  { kind: "youtube", id: "7McTWFjGgRQ" }, 
-  { kind: "youtube", id: "mY4wT9diCY4" }, 
-  { kind: "youtube", id: "65fpQlDfQOM" }, 
-  { kind: "youtube", id: "0kKeZzPXBPI" }, 
-  { kind: "youtube", id: "6hmMiU5AU28" }, 
-  { kind: "youtube", id: "uvUj3tIPgb4" }, 
-  { kind: "youtube", id: "W1In7UDRUgM" }, 
-  { kind: "youtube", id: "7kk9S5dpWks" }, 
-  { kind: "youtube", id: "891zlweu8ck" }, 
-  { kind: "youtube", id: "PI6751cuxzY" }, 
-  { kind: "youtube", id: "2uf7hgXJtxs" }, 
-  { kind: "youtube", id: "Y28qwQQfh9o" }, 
-  { kind: "youtube", id: "6br0QBjWueA" }, 
-  { kind: "youtube", id: "RrINQhup-l4" }, 
-  { kind: "youtube", id: "hRAHkf0u4qA" }, 
-  { kind: "youtube", id: "yHUgVB3Ftsk" }, 
-  { kind: "youtube", id: "CKrMOvK8DSo" },
-  { kind: "image", url: "IMG-20251010-WA0003.jpeg" }, 
-  { kind: "image", url: "IMG-20251010-WA0005.jpeg" }, 
-  { kind: "image", url: "photo_2025-10-10T11-02-01-497Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-02-03-954Z.png", setAsBackground:true  }, 
-  { kind: "image", url: "photo_2025-10-10T11-02-20-727Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-02-36-202Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-03-26-105Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-04-27-563Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-04-35-425Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-05-12-240Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-24-38-267Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-24-48-321Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-25-53-103Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-38-17-075Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-38-28-221Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-38-49-659Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-39-06-814Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-39-18-963Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-39-40-407Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-39-58-395Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-40-04-330Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-40-27-039Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-40-41-813Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-40-47-946Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-41-34-909Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-41-45-960Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T13-00-57-459Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T13-46-08-377Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-03-46-516Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-03-52-670Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-05-11-456Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-05-33-954Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-06-27-254Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-06-31-948Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-07-38-457Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-08-23-794Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-08-34-109Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-08-42-503Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-09-38-030Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-10-22-316Z.png" }
-];
-/* ---------- State ---------- */
-let currentIndex = -1;
-let rotationAngle = 0; // 0 | 90 | 180 | 270
+    // ensure each item has a stored rotation angle
+    items.forEach(i => {
+      if (typeof i.angle !== 'number') i.angle = 0;
+    });
 
-/* ---------- References ---------- */
-const gallery = document.getElementById('gallery');
-const modal = document.getElementById('modal');
-const modalMedia = document.getElementById('modal-media');
-const modalContent = document.getElementById('modalContent');
-const rotateBtn = document.getElementById('rotateBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const closeBtn = document.getElementById('closeBtn');
+    let currentIndex = -1;
+    let rotationAngle = 0;
 
-/* ---------- Build thumbnails ---------- */
-items.forEach((item, idx) => {
-  const t = document.createElement('div');
-  t.className = 'thumb' + (item.kind === 'youtube' ? ' video' : '');
-  const img = document.createElement('img');
-  img.dataset.index = idx;
-  if (item.kind === 'image') {
-    img.src = photoPath + item.url;
-    img.alt = item.url;
-  } else {
-    img.src = `https://img.youtube.com/vi/${item.id}/hqdefault.jpg`;
-    img.alt = 'YouTube thumbnail';
-    const play = document.createElement('div'); play.className = 'play-btn'; play.textContent = '▶';
-    t.appendChild(play);
-  }
-  t.appendChild(img);
-  gallery.appendChild(t);
-});
+    const gallery = document.getElementById('gallery');
+    const modal = document.getElementById('modal');
+    const modalContent = document.querySelector('.modal-content');
+    const modalMedia = document.getElementById('modal-media');
+    const closeBtn = document.getElementById('closeBtn');
+    const rotateBtn = document.getElementById('rotateBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-/* ---------- Event: open modal ---------- */
-gallery.addEventListener('click', (ev) => {
-  const img = ev.target.closest('.thumb img');
-  if (!img) return;
-  currentIndex = Number(img.dataset.index);
-  rotationAngle = 0;
-  openModal(currentIndex);
-});
+    // create thumbnails
+    items.forEach((item, index) => {
+      const thumb = document.createElement('div');
+      thumb.classList.add('thumb');
+      if (item.kind === 'image') {
+        const img = document.createElement('img');
+        img.src = photoPath + item.url;
+        img.dataset.type = 'image';
+        img.dataset.index = index;
+        thumb.appendChild(img);
+      } else if (item.kind === 'youtube') {
+        const img = document.createElement('img');
+        img.src = `https://img.youtube.com/vi/${item.id}/0.jpg`;
+        img.dataset.type = 'video';
+        img.dataset.index = index;
+        const playBtn = document.createElement('div');
+        playBtn.classList.add('play-btn');
+        playBtn.textContent = '▶';
+        thumb.classList.add('video');
+        thumb.appendChild(img);
+        thumb.appendChild(playBtn);
+      }
+      gallery.appendChild(thumb);
+    });
 
-/* ---------- Open/Close ---------- */
-function openModal(index) {
-  modal.style.display = 'flex';
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-  showMedia(index);
-}
-function closeModal() {
-  modal.style.display = 'none';
-  modal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-  modalMedia.innerHTML = '';
-}
+    gallery.addEventListener('click', e => {
+      const t = e.target;
+      if (t.dataset.index !== undefined) {
+        currentIndex = parseInt(t.dataset.index);
+        rotationAngle = items[currentIndex].angle || 0;
+        showMedia(currentIndex);
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    });
 
-/* ---------- Media creation and sizing logic ---------- */
-/*
- Approach:
- 1. Determine intrinsic size (naturalW,naturalH). For iframes we assume 1280x720.
- 2. For a candidate unrotated display size (w0,h0) = intrinsic scaled by s.
- 3. Rotated bounding box:
-      rotW = |w0*cos| + |h0*sin|
-      rotH = |w0*sin| + |h0*cos|
- 4. We want rotW <= maxW and rotH <= maxH -> compute s accordingly:
-      s = min(maxW / (intrW*|cos| + intrH*|sin|), maxH / (intrW*|sin| + intrH*|cos|), 1)
- 5. Set element size to intr * s, set modal-content size to rotW,rotH.
- 6. Apply transform rotate(...) with transform-origin center.
-*/
+    function fitModalToContent(el) {
+      const vw = window.innerWidth, vh = window.innerHeight;
+      let naturalW, naturalH;
+      if (el.tagName === 'IFRAME') {
+        naturalW = 1280;
+        naturalH = 720;
+      } else {
+        naturalW = el.naturalWidth || el.videoWidth || el.clientWidth;
+        naturalH = el.naturalHeight || el.videoHeight || el.clientHeight;
+      }
+      const rad = rotationAngle * Math.PI / 180;
+      const rotW = Math.abs(naturalW * Math.cos(rad)) + Math.abs(naturalH * Math.sin(rad));
+      const rotH = Math.abs(naturalW * Math.sin(rad)) + Math.abs(naturalH * Math.cos(rad));
+      const scale = Math.min(vw * 0.9 / rotW, vh * 0.9 / rotH, 1);
+      const w = rotW * scale;
+      const h = rotH * scale;
+      modalContent.style.width = w + 'px';
+      modalContent.style.height = h + 'px';
+      if (el.tagName === 'IFRAME') {
+        el.style.width = w + 'px';
+        el.style.height = (w * 9 / 16) + 'px';
+      } else {
+        el.style.maxWidth = '100%';
+        el.style.maxHeight = '100%';
+      }
+    }
 
-function showMedia(index) {
-  modalMedia.innerHTML = '';
-  const item = items[index];
+    function showMedia(index) {
+      const item = items[index];
+      modalMedia.innerHTML = '';
+      let el;
+      if (item.kind === 'image') {
+        el = document.createElement('img');
+        el.src = photoPath + item.url;
+      } else {
+        el = document.createElement('iframe');
+        el.src = `https://www.youtube.com/embed/${item.id}?autoplay=1`;
+        el.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        el.allowFullscreen = true;
+      }
+      modalMedia.appendChild(el);
+      el.style.transform = `rotate(${rotationAngle}deg)`;
+      el.onload = () => fitModalToContent(el);
+      if (el.tagName === 'IMG' && el.complete) fitModalToContent(el);
+    }
 
-  if (item.kind === 'image') {
-    const img = document.createElement('img');
-    img.src = photoPath + item.url;
-    img.style.display = 'block';
-    img.style.transformOrigin = '50% 50%';
-    img.onload = () => {
-      const natW = img.naturalWidth || img.width || 800;
-      const natH = img.naturalHeight || img.height || 600;
-      computeAndApplySizeAndShow(img, natW, natH);
-    };
-    img.onerror = () => {
-      // fallback: still try with approximate size
-      computeAndApplySizeAndShow(img, 800, 600);
-    };
-    modalMedia.appendChild(img);
-  } else { // youtube
-    const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube.com/embed/${item.id}?autoplay=1`;
-    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-    iframe.allowFullscreen = true;
-    iframe.style.display = 'block';
-    iframe.style.border = '0';
-    iframe.style.transformOrigin = '50% 50%';
-    modalMedia.appendChild(iframe);
-    // If intrinsic unavailable, assume 16:9 baseline
-    const natW = 1280, natH = 720;
-    // short delay to give layout a tick (not strictly required but keeps visual consistency)
-    requestAnimationFrame(() => computeAndApplySizeAndShow(iframe, natW, natH));
-  }
-}
+    rotateBtn.addEventListener('click', () => {
+      rotationAngle = (rotationAngle + 90) % 360;
+      items[currentIndex].angle = rotationAngle;
+      const el = modalMedia.firstElementChild;
+      if (el) {
+        el.style.transform = `rotate(${rotationAngle}deg)`;
+        fitModalToContent(el);
+      }
+    });
 
-/* core compute + apply */
-function computeAndApplySizeAndShow(mediaEl, intrW, intrH) {
-  // viewport available area (padding margin)
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  const padRatio = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--overlay-pad')) || 0.05;
-  const maxW = Math.max(100, vw * (1 - 2 * padRatio)); // enforce small minimum
-  const maxH = Math.max(100, vh * (1 - 2 * padRatio));
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % items.length;
+      rotationAngle = items[currentIndex].angle || 0;
+      showMedia(currentIndex);
+    });
 
-  // convert angle to radians
-  const a = rotationAngle % 360;
-  const rad = a * Math.PI / 180;
-  const cos = Math.abs(Math.cos(rad));
-  const sin = Math.abs(Math.sin(rad));
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + items.length) % items.length;
+      rotationAngle = items[currentIndex].angle || 0;
+      showMedia(currentIndex);
+    });
 
-  // compute denominator terms for s (see derivation in comments)
-  // rotW = s*(intrW*cos + intrH*sin) <= maxW -> s <= maxW / (intrW*cos + intrH*sin)
-  // rotH = s*(intrW*sin + intrH*cos) <= maxH -> s <= maxH / (intrW*sin + intrH*cos)
-  const denomW = intrW * cos + intrH * sin;
-  const denomH = intrW * sin + intrH * cos;
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
 
-  // Avoid division by zero (degenerate)
-  const sW = denomW > 0 ? maxW / denomW : 1;
-  const sH = denomH > 0 ? maxH / denomH : 1;
-  const s = Math.min(sW, sH, 1); // never upscale beyond intrinsic
+    window.addEventListener('click', e => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
 
-  // displayed (unrotated) size
-  const displayW = Math.round(intrW * s);
-  const displayH = Math.round(intrH * s);
-
-  // rotated bounding box size (what the modal-content must be)
-  const rotW = Math.round(Math.abs(displayW * Math.cos(rad)) + Math.abs(displayH * Math.sin(rad)));
-  const rotH = Math.round(Math.abs(displayW * Math.sin(rad)) + Math.abs(displayH * Math.cos(rad)));
-
-  // Apply exact pixel sizes
-  // mediaEl is sized to displayW x displayH (unrotated). We then rotate it.
-  mediaEl.style.width = displayW + 'px';
-  mediaEl.style.height = displayH + 'px';
-  mediaEl.style.maxWidth = 'none';
-  mediaEl.style.maxHeight = 'none';
-
-  // modalContent sized to the rotated bounding box (so no clipping)
-  // Add modal padding into account (modalContent has padding in CSS). Here we use box-sizing border-box so it's fine.
-  modalContent.style.width = rotW + 'px';
-  modalContent.style.height = rotH + 'px';
-
-  // center the media inside modal-content visually
-  // We will rotate the media element around its center.
-  mediaEl.style.transform = `rotate(${rotationAngle}deg)`;
-
-  // small accessibility: focus modal to handle keyboard navigation if required later
-  modalContent.focus && modalContent.focus();
-}
-
-/* ---------- Controls ---------- */
-rotateBtn.addEventListener('click', () => {
-  rotationAngle = (rotationAngle + 90) % 360;
-  const el = modalMedia.firstElementChild;
-  if (!el) return;
-  // Recompute using same intrinsic sizes:
-  let intrW, intrH;
-  if (el.tagName === 'IFRAME') { intrW = 1280; intrH = 720; }
-  else { intrW = el.naturalWidth || el.width || 800; intrH = el.naturalHeight || el.height || 600; }
-  computeAndApplySizeAndShow(el, intrW, intrH);
-});
-
-nextBtn.addEventListener('click', () => {
-  currentIndex = (currentIndex + 1) % items.length;
-  rotationAngle = 0;
-  showMedia(currentIndex);
-});
-prevBtn.addEventListener('click', () => {
-  currentIndex = (currentIndex - 1 + items.length) % items.length;
-  rotationAngle = 0;
-  showMedia(currentIndex);
-});
-closeBtn.addEventListener('click', closeModal);
-window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
-/* recompute when viewport changes */
-window.addEventListener('resize', () => {
-  const el = modalMedia.firstElementChild;
-  if (!el) return;
-  const intrW = (el.tagName === 'IFRAME') ? 1280 : (el.naturalWidth || el.width || 800);
-  const intrH = (el.tagName === 'IFRAME') ? 720 : (el.naturalHeight || el.height || 600);
-  computeAndApplySizeAndShow(el, intrW, intrH);
-});
-</script>
+    window.addEventListener('resize', () => {
+      const el = modalMedia.firstElementChild;
+      if (el) fitModalToContent(el);
+    });
+  </script>
 </body>
 </html>
