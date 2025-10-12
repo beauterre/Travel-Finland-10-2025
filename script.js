@@ -50,8 +50,6 @@ if (rotateButton !== null) {
         player.style.transform = `rotate(${rotationAngle}deg)`;
         player.style.transformOrigin = "center center";
 
-        // Optionally log the angle for debugging
-        console.log(`Player rotated to ${rotationAngle} degrees`);
     });
 } else {
     console.log("Rotate button not found");
