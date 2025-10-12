@@ -110,14 +110,22 @@
             border-radius: 15px;
         }
 
-        #modal-media {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
-
+        /* Modal Media (Image and Video) */
         #modal-media img, #modal-media iframe {
+            max-width: 100%;  /* Ensure media is not too large */
+            max-height: 80vh; /* Ensure media is contained within the view */
+            object-fit: contain;
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        /* Specific adjustments for videos in the modal */
+        .thumb.video iframe {
+            max-width: 100%;  /* Ensure it scales well */
+            max-height: 90vh; /* Ensure videos occupy most of the modal height */
+            width: auto;
+            height: auto;
+        }
+        #modal-media img {
             max-width: 100%;
             max-height: 80vh;
             object-fit: contain;
