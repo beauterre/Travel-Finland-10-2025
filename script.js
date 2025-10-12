@@ -102,7 +102,12 @@ function showItem(index) {
 // if no items, hide player.
 if(items.length==0)
 {
-    document.getElementById("player-column").style.display="none";
+     let playerColumns = document.getElementsByClassName("player-column");
+    
+    // Assuming you only want to hide the first player-column
+    if (playerColumns.length > 0) {
+        playerColumns[0].style.display = "none";
+    }
 }
 
 
