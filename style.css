@@ -181,7 +181,7 @@ small { color: grey; }
 
 #player {
     margin: 2em auto;
-    max-width: 560px;
+    max-width: 360px;
     aspect-ratio: 9 / 16;
     position: relative;
     background: #000;
