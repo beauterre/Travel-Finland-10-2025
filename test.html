@@ -152,24 +152,44 @@ window.addEventListener('click',e=>{if(e.target===modal)closeModal();});
 function closeModal(){modal.style.display='none';document.body.style.overflow='auto';modalMedia.innerHTML='';}
 
 // dynamically fit modal to rotated element
-function fitModalToContent(el){
-  const vw=window.innerWidth, vh=window.innerHeight;
-  const naturalW = el.videoWidth || el.naturalWidth || el.clientWidth;
-  const naturalH = el.videoHeight || el.naturalHeight || el.clientHeight;
+function fitModalToContent(el) {
+  const vw = window.innerWidth, vh = window.innerHeight;
+  let naturalW, naturalH;
 
-  // compute rotated box dimensions
-  const rad = rotationAngle*Math.PI/180;
-  const rotW = Math.abs(naturalW*Math.cos(rad)) + Math.abs(naturalH*Math.sin(rad));
-  const rotH = Math.abs(naturalW*Math.sin(rad)) + Math.abs(naturalH*Math.cos(rad));
+  if (el.tagName === 'IFRAME') {
+    // Assume a standard 16:9 YouTube frame as intrinsic base
+    naturalW = 1280;
+    naturalH = 720;
+  } else {
+    naturalW = el.naturalWidth || el.videoWidth || el.clientWidth;
+    naturalH = el.naturalHeight || el.videoHeight || el.clientHeight;
+  }
 
-  // scale down if too big
-  const scale = Math.min(vw*0.9/rotW, vh*0.9/rotH, 1);
-  const w = rotW*scale;
-  const h = rotH*scale;
+  const rad = rotationAngle * Math.PI / 180;
+  const rotW = Math.abs(naturalW * Math.cos(rad)) + Math.abs(naturalH * Math.sin(rad));
+  const rotH = Math.abs(naturalW * Math.sin(rad)) + Math.abs(naturalH * Math.cos(rad));
 
+  // Scale down if too big
+  const scale = Math.min(vw * 0.9 / rotW, vh * 0.9 / rotH, 1);
+  const w = rotW * scale;
+  const h = rotH * scale;
+
+  // Resize modal
   modalContent.style.width = w + 'px';
   modalContent.style.height = h + 'px';
+
+  // Resize video element explicitly to fill modal
+  if (el.tagName === 'IFRAME') {
+    el.style.width = w + 'px';
+    el.style.height = (w * 9 / 16) + 'px';
+    el.style.maxWidth = '100%';
+    el.style.maxHeight = '100%';
+  } else {
+    el.style.maxWidth = '100%';
+    el.style.maxHeight = '100%';
+  }
 }
+
 </script>
 </body>
 </html>
