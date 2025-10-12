@@ -8,6 +8,24 @@ h1, h2 { color: #0c2f4f }
 
 small { color: grey; }
 
+.flex-container {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin: 2rem 0;
+}
+
+.agenda-column {
+  flex: 2; /* takes more space */
+  max-width: 100%;
+}
+
+.player-column {
+  flex: 1; /* smaller than agenda */
+  max-width: 300px;
+}
+
+
 /* ——————————————————————————————
    AGENDA LIST
    —————————————————————————————— */
