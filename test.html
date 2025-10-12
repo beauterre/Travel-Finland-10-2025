@@ -53,6 +53,9 @@
 
 <script>
 /* ---------- Data ---------- */
+  const startDate = "9/10/2025";
+  const dag = 9;
+  
   const agenda = [
   { time: "8:00", message: "opgestaan" },
   { time: "8:08", message: "Nieuwe meditatie, geeft enorm veel energie." },
@@ -135,6 +138,27 @@ const items = [
 ];
 
 // script lib
+  function renderTitle()
+    {
+      // Parse startDate
+const [dayStr, monthStr, yearStr] = startDate.split('/');
+const start = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
+
+// Compute current day
+const current = new Date(start);
+current.setDate(start.getDate() + (dag - 1)); // add dag-1 days
+
+// Format date in Dutch style (e.g., 10 oktober 2025)
+const monthsNL = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
+const formattedDate = `${current.getDate()} ${monthsNL[current.getMonth()]} ${current.getFullYear()}`;
+
+// Build title
+const title = `<h1>🇫🇮 Reisverslag Finland 📅 Dag ${dag} (${formattedDate})</h1>`;
+let h1=document.createElement("h1");
+      h1.innerText=title;
+      document.appendChils(h1);
+    }
+  renderTitle();
   function renderAgenda() 
   {
   let containerEl=document.createElement("div");
