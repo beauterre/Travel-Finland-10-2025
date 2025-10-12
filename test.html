@@ -69,6 +69,7 @@
 
         .thumb.video .play-btn {
             display: flex; /* Show play button for videos */
+             pointer-events: none; /* Allow interactions with the play button */
         }
 
         /* Modal (Lightbox) Styles */
@@ -91,7 +92,7 @@
             padding: 20px;
             max-width: 90%;
             max-height: 90%;
-            border-radius: 8px;
+            border-radius: 12px;
             text-align: center;
             overflow: hidden;
         }
@@ -103,6 +104,10 @@
             font-size: 30px;
             color: #333;
             cursor: pointer;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 15px;
         }
 
         #modal-media {
