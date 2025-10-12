@@ -139,4 +139,4 @@ document.getElementById("nextBtn").addEventListener("click", () => {
 });
 
 // eerste item tonen
-showItem(0);
+if(items.length!=0)showItem(0);
