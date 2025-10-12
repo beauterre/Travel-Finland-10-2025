@@ -32,22 +32,18 @@ if (hasrotate != null) {
         // Calculate translation and rotation based on the angle
         switch (rotationAngle) {
             case 0:
-                player.style.transformOrigin = "center center";  // Default center origin
                 translateX = 0;
                 translateY = 0;
                 break;
             case 90:
-                player.style.transformOrigin = "top center";  // Rotate around top-center
                 translateX = "50%";  // No horizontal shift
                 translateY = "-150px";  // Move up 50% to make the top the center of rotation
                 break;
             case 180:
-                player.style.transformOrigin = "center center";  // Default center origin again
                 translateX = 0;  // Move left 50% to simulate rotating around center
                 translateY = 0;  // No vertical shift
                 break;
             case 270:
-                player.style.transformOrigin = "bottom center";  // Rotate around bottom-center
                 translateX = "50%";  // No horizontal shift
                 translateY = "150px";  // Move up 50% to make the top the center of rotation
                 break;
