@@ -21,18 +21,40 @@
         }
 
         /* Gallery Section */
-        #gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-            justify-items: center;
-            padding: 20px;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 900px;
-            overflow-y: auto;
-            max-height: 60vh; /* Add scrolling */
-        }
+      #gallery {
+    display: flex;                      /* Use flexbox for horizontal layout */
+    flex-wrap: nowrap;                   /* Prevent items from wrapping to the next line */
+    gap: 1rem;                           /* Space between items */
+    padding: 20px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 100%;                     /* Take full width of the container */
+    overflow-x: auto;                    /* Enable horizontal scrolling */
+    overflow-y: hidden;                  /* Prevent vertical scrolling */
+    max-height: 60vh;                    /* Limit the height */
+    scrollbar-width: thin;               /* For Firefox */
+}
+
+#gallery::-webkit-scrollbar {
+    height: 8px; /* Scrollbar height */
+}
+
+#gallery::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+#gallery::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+#gallery .gallery-item {
+    min-width: 150px;                    /* Ensure minimum size for each item */
+    max-width: 150px;                    /* Control maximum width */
+    height: auto;
+    flex-shrink: 0;                      /* Prevent items from shrinking */
+    cursor: pointer;
+}
 
         .thumb {
             position: relative;
