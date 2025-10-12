@@ -50,6 +50,27 @@
             object-fit: cover; /* Center and fill without stretching */
         }
 
+        .thumb .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 50%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .thumb.video .play-btn {
+            display: flex; /* Show play button for videos */
+        }
+
         /* Modal (Lightbox) Styles */
         .modal {
             display: none; 
@@ -70,23 +91,18 @@
             padding: 20px;
             max-width: 90%;
             max-height: 90%;
-            border-radius: 12px;
+            border-radius: 8px;
             text-align: center;
             overflow: hidden;
         }
 
         .close-btn {
             position: absolute;
-            top: 0px;
-            right: 0px;
+            top: 10px;
+            right: 10px;
             font-size: 30px;
             color: #333;
             cursor: pointer;
-            z-index: 30;
-            background: white;
-            border-radius: 50px;
-            width:30px;
-            height:30px;
         }
 
         #modal-media {
@@ -168,75 +184,14 @@
     <!-- Data Script -->
     <script>
         const photoPath = "./fotos/Dag9/"; // base path for local photos
-       const items = [
-  { kind: "image", url: "Screenshot_20251010-175907.png" }, 
-
-  { kind: "youtube", id: "JYt82UGhnOM" }, 
-  { kind: "youtube", id: "uk500H2d274" }, 
-  { kind: "youtube", id: "2fGf_YFchRM" }, 
-  { kind: "youtube", id: "znYZmf6yetA" }, 
-  { kind: "youtube", id: "1JZkNYbJpjw" }, 
-  { kind: "youtube", id: "d7wIWFS-U8s" }, 
-  { kind: "youtube", id: "RNxJ1nIHrvk" }, 
-  { kind: "youtube", id: "_12uPhPoj3c" }, 
-  { kind: "youtube", id: "7McTWFjGgRQ" }, 
-  { kind: "youtube", id: "mY4wT9diCY4" }, 
-  { kind: "youtube", id: "65fpQlDfQOM" }, 
-  { kind: "youtube", id: "0kKeZzPXBPI" }, 
-  { kind: "youtube", id: "6hmMiU5AU28" }, 
-  { kind: "youtube", id: "uvUj3tIPgb4" }, 
-  { kind: "youtube", id: "W1In7UDRUgM" }, 
-  { kind: "youtube", id: "7kk9S5dpWks" }, 
-  { kind: "youtube", id: "891zlweu8ck" }, 
-  { kind: "youtube", id: "PI6751cuxzY" }, 
-  { kind: "youtube", id: "2uf7hgXJtxs" }, 
-  { kind: "youtube", id: "Y28qwQQfh9o" }, 
-  { kind: "youtube", id: "6br0QBjWueA" }, 
-  { kind: "youtube", id: "RrINQhup-l4" }, 
-  { kind: "youtube", id: "hRAHkf0u4qA" }, 
-  { kind: "youtube", id: "yHUgVB3Ftsk" }, 
-  { kind: "youtube", id: "CKrMOvK8DSo" },
-  { kind: "image", url: "IMG-20251010-WA0003.jpeg" }, 
-  { kind: "image", url: "IMG-20251010-WA0005.jpeg" }, 
-  { kind: "image", url: "photo_2025-10-10T11-02-01-497Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-02-03-954Z.png", setAsBackground:true  }, 
-  { kind: "image", url: "photo_2025-10-10T11-02-20-727Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-02-36-202Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-03-26-105Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-04-27-563Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-04-35-425Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-05-12-240Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-24-38-267Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-24-48-321Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T11-25-53-103Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-38-17-075Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-38-28-221Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-38-49-659Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-39-06-814Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-39-18-963Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-39-40-407Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-39-58-395Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-40-04-330Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-40-27-039Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-40-41-813Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-40-47-946Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-41-34-909Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T12-41-45-960Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T13-00-57-459Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T13-46-08-377Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-03-46-516Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-03-52-670Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-05-11-456Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-05-33-954Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-06-27-254Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-06-31-948Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-07-38-457Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-08-23-794Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-08-34-109Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-08-42-503Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-09-38-030Z.png" }, 
-  { kind: "image", url: "photo_2025-10-10T14-10-22-316Z.png" }
-];
+        const items = [
+            { kind: "image", url: "Screenshot_20251010-175907.png" },
+            { kind: "youtube", id: "JYt82UGhnOM" },
+            { kind: "youtube", id: "uk500H2d274" },
+            { kind: "image", url: "IMG-20251010-WA0003.jpeg" },
+            { kind: "image", url: "IMG-20251010-WA0005.jpeg" }
+            // Add more items here...
+        ];
 
         let currentIndex = -1; // Track current media index
         let rotationAngle = 0; // Rotation angle state
@@ -271,6 +226,11 @@
                 img.dataset.type = 'video';
                 img.dataset.src = item.id;
                 img.dataset.index = index; // Save index
+                thumb.classList.add('video'); // Add 'video' class for play button
+                const playBtn = document.createElement('div');
+                playBtn.classList.add('play-btn');
+                playBtn.innerHTML = '▶';
+                thumb.appendChild(playBtn);
                 thumb.appendChild(img);
             }
 
@@ -306,22 +266,20 @@
             } else if (type === 'youtube') {
                 const iframe = document.createElement('iframe');
                 iframe.src = `https://www.youtube.com/embed/${src}?autoplay=1`;
-                iframe.allowFullscreen = true;
-                iframe.style.width = "80vw";
-                iframe.style.height = "60vh"; // Larger initial size for videos
+                iframe.frameborder = "0";
+                iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowfullscreen = true;
                 modalMedia.appendChild(iframe);
             }
 
-            // Reset rotation angle for new content
-            rotationAngle = 0;
+            // Adjust scaling on rotate
             modalMedia.querySelector('img, iframe').style.transform = `rotate(${rotationAngle}deg)`;
         }
 
-        // Rotate media
+        // Rotate button functionality
         rotateBtn.addEventListener('click', () => {
             rotationAngle = (rotationAngle + 90) % 360;
-            const media = modalMedia.querySelector('img, iframe');
-            media.style.transform = `rotate(${rotationAngle}deg)`;
+            showMedia(currentIndex); // Rescale and rotate the media
         });
 
         // Navigate to the next media
