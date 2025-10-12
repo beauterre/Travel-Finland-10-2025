@@ -31,6 +31,21 @@ if (rotateButton !== null) {
         // Update the rotation angle by 90 degrees, looping back after 360
         rotationAngle = (rotationAngle + 90) % 360;
 
+        switch(rotationAngle)
+        {
+            case 0: 
+                player.style.transformOrigin="center center";  // Set the rotation point
+            break; 
+            case 90: 
+                player.style.transformOrigin="top center";  // Set the rotation point
+            break; 
+            case 180: 
+                player.style.transformOrigin="center center";  // Set the rotation point
+            break; 
+            case 270: 
+                player.style.transformOrigin="bottom center";  // Set the rotation point
+            break; 
+        }
         // Apply the rotation and set the transform-origin to center
         player.style.transform = `rotate(${rotationAngle}deg)`;
         player.style.transformOrigin = "center center";
