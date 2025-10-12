@@ -382,17 +382,11 @@ const modalContent = document.querySelector('.modal-content');
         modalContent.style.width = 'auto';
         modalContent.style.height = '90vh';  // Adjust this if needed to avoid clipping
 
-        // Set max width for the media (image or iframe)
-        mediaElement.style.maxWidth = '100%';
-        mediaElement.style.height = 'auto';  // Ensure it maintains aspect ratio
     } else {
         // Default layout for 0° and 180° rotations
         modalContent.style.width = '90%';
         modalContent.style.height = 'auto';
 
-        // Set max height for the media to ensure it's responsive
-        mediaElement.style.maxWidth = '100%';
-        mediaElement.style.maxHeight = '80vh';  // Adjust this if needed
     }
 
     // Optionally, adjust the content's padding or margins to center properly
