@@ -15,9 +15,10 @@ let rotationAngle = 0; // Keep track of the current rotation angle
 
 // Rotate button event listener
 var hasrotate=document.getElementById("pictureRotate90");
-    console.log("hook up rotate"+hasrotate);
+console.log("hook up rotate"+hasrotate);
 
-if(hasrotate!=null)hasrotate.addEventListener("click", () => {
+if(hasrotate!=null)
+    hasrotate.addEventListener("click", () => {
     console.log("hook up rotate");
     rotationAngle = (rotationAngle + 90) % 360;  // Increment by 90 degrees (loop back after 360)
     player.style.transform = `rotate(${rotationAngle}deg)`;  // Apply the rotation
