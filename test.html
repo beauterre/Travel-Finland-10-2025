@@ -349,40 +349,44 @@
 
         // Show media in modal
         function showMedia(index) {
-            const item = items[index];
-            const type = item.kind;
-            const src = item.kind === 'image' ? item.url : item.id;
+    const item = items[index];
+    const type = item.kind;
+    const src = item.kind === 'image' ? item.url : item.id;
 
-            // Clear previous content
-            modalMedia.innerHTML = '';
+    // Clear previous content
+    modalMedia.innerHTML = '';
 
-            // Add media based on type
-            if (type === 'image') {
-                const img = document.createElement('img');
-                img.src = photoPath + src;
-                modalMedia.appendChild(img);
-            } else if (type === 'youtube') {
-                const iframe = document.createElement('iframe');
-                iframe.src = `https://www.youtube.com/embed/${src}?autoplay=1`;
-                iframe.frameborder = "0";
-                iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
-                iframe.allowfullscreen = true;
-                modalMedia.appendChild(iframe);
-                 iframe.style.maxHeight = '90vh'; // Adjust this if needed
-            }
+    // Add media based on type
+    let mediaElement;
+    if (type === 'image') {
+        mediaElement = document.createElement('img');
+        mediaElement.src = photoPath + src;
+    } else if (type === 'youtube') {
+        mediaElement = document.createElement('iframe');
+        mediaElement.src = `https://www.youtube.com/embed/${src}?autoplay=1`;
+        mediaElement.frameborder = "0";
+        mediaElement.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+        mediaElement.allowfullscreen = true;
+    }
 
-            // Adjust scaling on rotate
-            // Check if the rotation angle is 90 or 270 degrees, then adjust width/height
-                if (rotationAngle === 90 || rotationAngle === 270) {
-                    mediaElement.style.width = "auto";    // Set width to auto to let height control
-                    mediaElement.style.height = "80vh";   // Limit height for better scaling
-                    mediaElement.style.maxWidth = "100%"; // Ensure it doesn't overflow the container
-                } else {
-                    // Default scale for non-rotated media
-                    mediaElement.style.width = "100%";    // Let width control the scaling
-                    mediaElement.style.height = "auto";   // Keep aspect ratio intact
-                }
-        }
+    // Append media to modal
+    modalMedia.appendChild(mediaElement);
+
+    // Adjust scaling and rotation
+    mediaElement.style.transform = `rotate(${rotationAngle}deg)`;
+
+    // Check if the rotation angle is 90 or 270 degrees, then adjust width/height
+    if (rotationAngle === 90 || rotationAngle === 270) {
+        mediaElement.style.width = "auto";    // Set width to auto to let height control
+        mediaElement.style.height = "80vh";   // Limit height for better scaling
+        mediaElement.style.maxWidth = "100%"; // Ensure it doesn't overflow the container
+    } else {
+        // Default scale for non-rotated media
+        mediaElement.style.width = "100%";    // Let width control the scaling
+        mediaElement.style.height = "auto";   // Keep aspect ratio intact
+    }
+}
+
 
         // Rotate button functionality
         rotateBtn.addEventListener('click', () => {
