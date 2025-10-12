@@ -102,7 +102,7 @@ function showItem(index) {
 // if no items, hide player.
 if(items.length==0)
 {
-    player.style.display="none";
+    document.getElementById("player-column").style.display="none";
 }
 
 
