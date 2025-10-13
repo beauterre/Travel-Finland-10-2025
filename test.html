@@ -181,8 +181,9 @@ function renderGallery()
     gal.id="gallery";
     document.body.appendChild(gal);
       let nr=document.createElement("small");
-    nr.innerTexy="Media items: "+items.length;
+    nr.innerText="Media items: "+items.length;
     document.body.appendChild(nr);
+    console.log(nr);
   }
   function renderModal() {
   // Check if modal already exists
