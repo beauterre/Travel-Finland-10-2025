@@ -180,6 +180,9 @@ function renderGallery()
       let gal=document.createElement("div");
     gal.id="gallery";
     document.body.appendChild(gal);
+      let nr=document.createElement("small");
+    nr.innerTexy="Media items: "+items.length;
+    document.body.appendChild(nr);
   }
   function renderModal() {
   // Check if modal already exists
