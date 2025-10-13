@@ -39,8 +39,7 @@
   
 <script>
 /* ---------- Data ---------- */
-  const startDate = "1/10/2025";
-  const dag = 9;
+  const dag = "9/10/2025";
   
   const agenda = [
   { time: "8:00", message: "opgestaan" },
@@ -126,24 +125,21 @@ const items = [
 // script lib
   function renderTitle()
     {
-      // Parse startDate
-const [dayStr, monthStr, yearStr] = startDate.split('/');
-const start = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
+// dag is a string like "9/10/2025" (dd/mm/yyyy)
+  const [dayStr, monthStr, yearStr] = dag.split('/');
+  const dateObj = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
 
-      
-// Compute current day
-const current = new Date(start);
-current.setDate(start.getDate() + (dag - 1)); // add dag-1 days
+  // Format date in Dutch style
+  const monthsNL = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
+  const formattedDate = `${dateObj.getDate()} ${monthsNL[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
 
-// Format date in Dutch style (e.g., 10 oktober 2025)
-const monthsNL = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
-const formattedDate = `${current.getDate()} ${monthsNL[current.getMonth()]} ${current.getFullYear()}`;
+  // Build title string
+  const titleText = `🇫🇮 Reisverslag Finland 📅 ${formattedDate}`;
 
-// Build title
-const title = `🇫🇮 Reisverslag Finland 📅 Dag ${dag} (${formattedDate})`;
-      document.title = title;
+  // Set as <title> in the document
+  document.title = titleText;
 let h1=document.createElement("h1");
-      h1.innerText=title;
+      h1.innerText=titleText;
       document.body.appendChild(h1);
 
 const buttons_html = `
