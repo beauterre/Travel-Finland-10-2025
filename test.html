@@ -36,21 +36,7 @@
 </style>
 </head>
 <body>
-  <h1>Gallery with proper rotated modal sizing</h1>
-  <div id="gallery"></div>
-
-  <div id="modal" class="modal" aria-hidden="true">
-    <div class="modal-content" id="modalContent">
-      <span id="closeBtn" class="close-btn" title="Close">&times;</span>
-      <div id="modal-media"></div>
-      <div class="controls">
-        <button id="prevBtn" class="control-btn" title="Previous">❮</button>
-        <button id="rotateBtn" class="control-btn" title="Rotate">🔄</button>
-        <button id="nextBtn" class="control-btn" title="Next">❯</button>
-      </div>
-    </div>
-  </div>
-
+  
 <script>
 /* ---------- Data ---------- */
   const startDate = "9/10/2025";
@@ -166,7 +152,7 @@ let div=document.createElement("div");
       document.body.appendChild(div);
       
     }
-  renderTitle();
+ 
   function renderAgenda() 
   {
   let containerEl=document.createElement("div");
@@ -184,7 +170,39 @@ let div=document.createElement("div");
   containerEl.innerHTML = '';
   containerEl.appendChild(ul);
 }
-  renderAgenda();
+function renderGallery()
+  {
+      let gal=document.createElement("div");
+    gal.id="gallery";
+    document.body.appendChild(gal);
+  }
+  function renderModal() {
+  // Check if modal already exists
+  if (document.getElementById('modal')) return;
+
+  const modalHTML = `
+    <div id="modal" class="modal" aria-hidden="true">
+      <div class="modal-content" id="modalContent">
+        <span id="closeBtn" class="close-btn" title="Close">&times;</span>
+        <div id="modal-media"></div>
+        <div class="controls">
+          <button id="prevBtn" class="control-btn" title="Previous">❮</button>
+          <button id="rotateBtn" class="control-btn" title="Rotate">🔄</button>
+          <button id="nextBtn" class="control-btn" title="Next">❯</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Append modal to body
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+  // now make the page
+   renderTitle();
+   renderGallery();
+    renderAgenda();
+   renderModal();
+
 
   
 /* ensure angle persistence */
