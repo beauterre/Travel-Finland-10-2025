@@ -39,7 +39,7 @@
   
 <script>
 /* ---------- Data ---------- */
-  const startDate = "28/9/2025";
+  const startDate = "1/10/2025";
   const dag = 9;
   
   const agenda = [
@@ -130,6 +130,7 @@ const items = [
 const [dayStr, monthStr, yearStr] = startDate.split('/');
 const start = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
 
+      
 // Compute current day
 const current = new Date(start);
 current.setDate(start.getDate() + (dag - 1)); // add dag-1 days
