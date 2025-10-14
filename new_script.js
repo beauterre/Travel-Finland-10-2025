@@ -25,6 +25,7 @@ console.log(getDayNumber("2025-10-15")); // -1 if today is 2025-10-14
   const dateObj = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
 
   var daynr=dayDifference("2025-09-30", dag);// start date fixed..
+  console.log("daynr"+daynr);
   // Format date in Dutch style
   const monthsNL = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
   const formattedDate = `${dateObj.getDate()} ${monthsNL[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
