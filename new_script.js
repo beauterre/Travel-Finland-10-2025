@@ -77,7 +77,7 @@ function renderGallery()
       let nr=document.createElement("small");
     nr.innerText="Media items: "+items.length;
     document.body.appendChild(nr);
-    console.log(nr);
+    //console.log(nr);
   }
   function renderModal() {
   // Check if modal already exists
