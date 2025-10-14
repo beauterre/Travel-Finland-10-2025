@@ -14,9 +14,6 @@ function dayDifference(date1, date2) {
   return diffDays;
 }
 
-// Example usage:
-console.log(getDayNumber("2025-10-12")); // e.g., 2 if today is 2025-10-14
-console.log(getDayNumber("2025-10-15")); // -1 if today is 2025-10-14
 
   function renderTitle()
     {
