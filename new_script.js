@@ -1,5 +1,7 @@
 // script lib
 
+
+
 function dayDifference(date1, date2) {
   const d1 = new Date(date1);
   const d2 = new Date(date2);
@@ -21,6 +23,7 @@ function dayDifference(date1, date2) {
   const [dayStr, monthStr, yearStr] = dag.split('/');
   const dateObj = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
 
+  console.log("dag:"+dag);
   var daynr=dayDifference("2025-09-30", dag);// start date fixed..
   console.log("daynr"+daynr);
   // Format date in Dutch style
