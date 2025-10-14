@@ -1,10 +1,30 @@
 // script lib
+
+function getDayNumber(startDate) {
+  const start = new Date(startDate);
+  const today = new Date();
+
+  // Normalize both dates to remove time portion
+  start.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  const diffTime = today - start; // difference in milliseconds
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  return diffDays;
+}
+
+// Example usage:
+console.log(getDayNumber("2025-10-12")); // e.g., 2 if today is 2025-10-14
+console.log(getDayNumber("2025-10-15")); // -1 if today is 2025-10-14
+
   function renderTitle()
     {
 // dag is a string like "9/10/2025" (dd/mm/yyyy)
   const [dayStr, monthStr, yearStr] = dag.split('/');
   const dateObj = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
 
+  var daynr=getDayNumber("2025-09-30");// start date fixed..
   // Format date in Dutch style
   const monthsNL = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
   const formattedDate = `${dateObj.getDate()} ${monthsNL[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
@@ -21,8 +41,8 @@ let h1=document.createElement("h1");
 const buttons_html = `
   <div class="top-buttons-container">
     <a class="top-button" href="index.html">Terug naar de agenda</a>
-    <a class="top-button" href="dag${dag - 1}.html">Vorige dag</a>
-    <a class="top-button" href="dag${dag + 1}.html">Volgende dag</a>
+    <a class="top-button" href="dag${daynr - 1}.html">Vorige dag</a>
+    <a class="top-button" href="dag${daynr + 1}.html">Volgende dag</a>
   </div>
 `;
       let div=document.createElement("div");
