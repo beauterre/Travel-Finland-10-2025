@@ -23,9 +23,11 @@ function dayDifference(date1, date2) {
   const [dayStr, monthStr, yearStr] = dag.split('/');
   const dateObj = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
 
+  
   console.log("dag:"+dag);
-  var daynr=dayDifference("2025-09-30", dag);// start date fixed..
-  console.log("daynr"+daynr);
+   // dag is a string like "14/10/2025" (dd/mm/yyyy)
+  const daynr = dayDifference(new Date("2025-09-30"), dateObj); // pass Date objects
+  console.log("daynr", daynr); console.log("daynr"+daynr);
   // Format date in Dutch style
   const monthsNL = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
   const formattedDate = `${dateObj.getDate()} ${monthsNL[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
