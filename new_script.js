@@ -1,14 +1,14 @@
 // script lib
 
-function getDayNumber(startDate) {
-  const start = new Date(startDate);
-  const today = new Date();
+function dayDifference(date1, date2) {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
 
   // Normalize both dates to remove time portion
-  start.setHours(0, 0, 0, 0);
-  today.setHours(0, 0, 0, 0);
+  d1.setHours(0, 0, 0, 0);
+  d2.setHours(0, 0, 0, 0);
 
-  const diffTime = today - start; // difference in milliseconds
+  const diffTime = d1 - d2; // difference in milliseconds
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
   return diffDays;
@@ -24,7 +24,7 @@ console.log(getDayNumber("2025-10-15")); // -1 if today is 2025-10-14
   const [dayStr, monthStr, yearStr] = dag.split('/');
   const dateObj = new Date(Number(yearStr), Number(monthStr) - 1, Number(dayStr));
 
-  var daynr=getDayNumber("2025-09-30");// start date fixed..
+  var daynr=dayDifference("2025-09-30", dag);// start date fixed..
   // Format date in Dutch style
   const monthsNL = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
   const formattedDate = `${dateObj.getDate()} ${monthsNL[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
