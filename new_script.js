@@ -27,6 +27,7 @@ function dayDifference(date1, date2) {
   console.log("dag:"+dag);
    // dag is a string like "14/10/2025" (dd/mm/yyyy)
   const daynr = dayDifference( dateObj,new Date("2025-09-30")); // pass Date objects
+  daynr-=1;
   console.log("daynr", daynr); console.log("daynr"+daynr);
   // Format date in Dutch style
   const monthsNL = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
