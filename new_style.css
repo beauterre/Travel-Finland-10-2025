@@ -23,7 +23,7 @@ body::before {
   height: 100%;
   background-color: rgba(255, 255, 255, 0.4); /* white with 40% opacity */
   pointer-events: none;  /* lets clicks pass through */
-  z-index: 0;            /* behind your main content */
+  z-index: -1;            /* behind your main content */
 }
 
 /* ============
