@@ -80,6 +80,16 @@ function renderGallery()
     nr.innerText="Media items: "+items.length;
     document.body.appendChild(nr);
     //console.log(nr);
+
+  /* ---------- Set background image if flagged ---------- */
+  const bgItem = items.find(i => i.setAsBackground && i.kind === 'image');
+  if (bgItem) {
+    document.body.style.backgroundImage = `url(${photoPath + bgItem.url})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+  }
+
   }
   function renderModal() {
   // Check if modal already exists
