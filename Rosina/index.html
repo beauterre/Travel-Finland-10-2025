@@ -2,19 +2,24 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Elsa Gindler Media</title>
+    <title>Kongratulaties voor het zijn van een kompanie</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             padding: 40px;
-            background-color: #f9f9f9;
-            color: #333;
+            background-color: #000; /* Dark background for fireworks */
+            color: #fff;
+            overflow: hidden;
+            margin: 0;
         }
-        h1 {
-            margin-bottom: 20px;
+        h1, h2 {
+            text-align: center;
         }
         .media-section {
             margin-bottom: 40px;
+            text-align: center;
+            z-index: 10;
+            position: relative;
         }
         audio {
             width: 100%;
@@ -25,16 +30,25 @@
             height: 480px;
             border: none;
         }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
-    <h1>Elsa Gindler Media</h1>
+    <canvas id="fireworksCanvas"></canvas>
+
+    <h1>Congratulations on your new company on Aruba!</h1>
 
     <div class="media-section">
         <h2>Audio: ElsaGindler.mp3</h2>
         <audio controls>
             <source src="ElsaGindler.mp3" type="audio/mpeg">
-            Je browser ondersteunt geen audio-element.
+            Your browser does not support audio.
         </audio>
     </div>
 
@@ -42,5 +56,72 @@
         <h2>Video: YouTube</h2>
         <iframe src="https://www.youtube.com/embed/OvPjtolajZk?rel=0&modestbranding=1" allowfullscreen></iframe>
     </div>
+
+    <script>
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 8;
+                this.speedY = (Math.random() - 0.5) * 8;
+                this.alpha = 1;
+                this.gravity = 0.05;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.speedY += this.gravity;
+                this.alpha -= 0.02;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        let particles = [];
+
+        function createFirework() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height / 2;
+            const colors = ['#ff0040', '#ff8000', '#ffff00', '#40ff00', '#00ffff', '#0040ff', '#8000ff'];
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if (p.alpha <= 0) particles.splice(index, 1);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        setInterval(createFirework, 800);
+        animate();
+    </script>
 </body>
 </html>
