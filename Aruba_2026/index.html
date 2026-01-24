@@ -1,147 +1,138 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <title>Mijn vlucht naar Aruba</title>
+  <title>Hjalmar naar Aruba ❤️</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #a0eaff, #ffd7a0);
+      background: linear-gradient(to bottom, #ffe0e6, #a0eaff);
       color: #333;
       margin: 0;
       padding: 20px;
     }
 
-    h1 {
+    header {
       text-align: center;
-      color: #006d5b;
-      margin-bottom: 5px;
+      padding-bottom: 20px;
     }
 
-    h2 {
-      text-align: center;
-      color: #004d3c;
-      margin-top: 0;
+    header h1 {
+      color: #d6006c;
+      margin: 0;
+      font-size: 2.5em;
+    }
+
+    header h2 {
+      color: #006d5b;
+      margin-top: 5px;
       font-weight: normal;
+      font-size: 1.5em;
     }
 
-    .reservation, .extras {
+    .heart {
+      color: #d6006c;
+      font-size: 1.2em;
+      margin: 0 2px;
+    }
+
+    nav {
       text-align: center;
-      font-size: 1.1em;
-      margin-bottom: 20px;
-      color: #00332e;
+      margin-bottom: 30px;
     }
 
-    .extras span {
-      display: inline-block;
-      margin: 5px 10px;
-      font-weight: bold;
-      color: #006d5b;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: auto;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    th, td {
-      border: 1px solid #006d5b;
-      padding: 10px;
-      text-align: center;
-    }
-
-    th {
+    nav a {
+      text-decoration: none;
       background-color: #00a87f;
       color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      margin: 0 10px;
+      transition: 0.3s;
     }
 
-    tr:nth-child(even) {
-      background-color: #d0f5ea;
+    nav a:hover {
+      background-color: #006d5b;
     }
 
-    tr:nth-child(odd) {
-      background-color: #f0fff8;
+    section {
+      background-color: rgba(255, 255, 255, 0.85);
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 900px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    td:last-child {
-      font-weight: bold;
+    section h3 {
+      color: #d6006c;
+      border-bottom: 2px solid #00a87f;
+      padding-bottom: 5px;
+    }
+
+    section p, section ul {
+      line-height: 1.5em;
+    }
+
+    ul {
+      list-style-type: disc;
+      padding-left: 20px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
       color: #004d3c;
     }
 
-    @media (max-width: 768px) {
-      table, th, td {
-        font-size: 0.9em;
-      }
+    footer .heart {
+      font-size: 1em;
     }
   </style>
 </head>
 <body>
 
-  <h1>Mijn vlucht naar Aruba</h1>
-  <h2>Aruba, Aruba</h2>
+  <header>
+    <h1>Hjalmar naar Aruba <span class="heart">❤️</span></h1>
+    <h2>Een romantische reis</h2>
+  </header>
 
-  <div class="reservation">
-    Referentienummer reservering: <strong>200051326288</strong><br>
-    TUI.nl code: <strong>6964</strong>
-  </div>
+  <nav>
+    <a href="vlucht/index.html">Mijn vlucht ✈️</a>
+    <a href="#huisvesting">Huisvesting 🏝️</a>
+    <a href="#adressen">Adressen thuisblijvers 🏠</a>
+    <a href="#verslag">Verslag ✍️</a>
+  </nav>
 
-  <div class="extras">
-    Extra's:<br>
-    <span>Extra beenruimte</span>
-    <span>10 kg handbagage</span>
-    <span>40 kg ruimbagage</span>
-  </div>
+  <section id="huisvesting">
+    <h3>Huisvesting</h3>
+    <p>Verblijfplaats(en):</p>
+      <ul>
+        <li>Naam accommodatie</li>
+        <li>Adres</li>
+        <li>Contactgegevens</li>
+        <li>Prijs / maand / nachten</li>
+      </ul>
+  </section>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Richting</th>
-        <th>Datum</th>
-        <th>Vlucht</th>
-        <th>Vertrek</th>
-        <th>Vertrekplaats</th>
-        <th>Aankomst</th>
-        <th>Aankomstplaats</th>
-        <th>Type</th>
-        <th>Opmerkingen</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Heen</td>
-        <td>Ma 2 Mrt 2026</td>
-        <td>OR 381</td>
-        <td>12:15</td>
-        <td>Amsterdam (AMS)</td>
-        <td>18:00</td>
-        <td>Aruba (AUA)</td>
-        <td>Rechtstreeks</td>
-        <td>TUI fly</td>
-      </tr>
-      <tr>
-        <td>Terug</td>
-        <td>Ma 6 Apr 2026</td>
-        <td>OR 381</td>
-        <td>17:25</td>
-        <td>Aruba (AUA)</td>
-        <td>11:40 +1 dag</td>
-        <td>Amsterdam (AMS)</td>
-        <td>Via Curaçao</td>
-        <td>TUI fly</td>
-      </tr>
-    </tbody>
-  </table>
+  <section id="adressen">
+    <h3>Adressen en telefoonnummers van en voor thuisblijvers</h3>
+    <p>Contactinformatie en adressen voor mensen die thuisblijven, zodat ze op de hoogte blijven van de reis:</p>
+    <ul>
+      <li>Familie</li>
+      <li>Vrienden</li>
+      <li>Noodcontacten</li>
+    </ul>
+  </section>
 
+  <section id="verslag">
+    <h3>Verslag</h3>
+    <p>Hier komt het verslag</p>
+  </section>
 
-<a href="https://www.tui.nl/mijntui/">Link naar mijnTUI</a>
-<br>
-Mijn vlucht naar Aruba, Aruba<br>
-Referentienummer reservering 200051326288
-6964 (TUI.nl)<br>
+  <footer>
+    <p>Hjalmar &amp; Aruba <span class="heart">❤️</span></p>
+  </footer>
 
-  
 </body>
 </html>
