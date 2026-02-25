@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Travel Log (Lazy Load)</title>
+<style>
+  body { font-family: sans-serif; margin: 20px; background: #f0f0f0; }
+  h1 { text-align: center; }
+  #searchBox { width: 100%; max-width: 500px; padding: 8px; margin: 20px auto; display: block; }
+  .entry { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+  .entry.even { background: #ffffff; }
+  .entry.odd { background: #e9f5ff; }
+  iframe, .map { width: 480px; height: 270px; border: 0; }
+  .description { max-width: 480px; white-space: pre-wrap; }
+  .title { font-weight: bold; margin-bottom: 5px; }
+  .date { font-size: 0.85em; color: #555; margin-bottom: 5px; }
+</style>
+</head>
+<body>
+
+<h1>Travel Log</h1>
+<input type="text" id="searchBox" placeholder="Search #hashtags or keywords...">
+<div id="feed"></div>
+
+<script>
+// CONFIG
+const API_KEY = "YOUR_YOUTUBE_API_KEY"; // YouTube Data API key
+const CHANNEL_ID = "UCAI8SedeznCrfphUGlOrm4A";
+const MAX_RESULTS = 10; // lazy load in chunks of 10
+let nextPageToken = "";
+let allVideoEntries = [];
+
+// UTILS
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleString();
+}
+function formatDay(dateStr) {
+  const d = new Date(dateStr);
+  return d.toDateString();
+}
+
+// FETCH CHUNK OF VIDEOS
+async function fetchVideos() {
+  // get uploads playlist ID if first load
+  if (!allVideoEntries.length) {
+    const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${API_KEY}`);
+    const chData = await chRes.json();
+    uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
+  }
+
+  const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${uploadsId}&maxResults=${MAX_RESULTS}&pageToken=${nextPageToken}&key=${API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  nextPageToken = data.nextPageToken || "";
+
+  for (const item of data.items) {
+    const vidId = item.contentDetails.videoId;
+    const snippet = item.snippet;
+    const title = snippet.title;
+    const description = snippet.description;
+    const publishedAt = snippet.publishedAt;
+
+    // fetch location for each video
+    const vidRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=recordingDetails&id=${vidId}&key=${API_KEY}`);
+    const vidData = await vidRes.json();
+    const loc = vidData.items[0].recordingDetails?.location;
+
+    allVideoEntries.push({ vidId, title, description, publishedAt, loc });
+  }
+
+  renderFeed();
+}
+
+// RENDER FEED
+function renderFeed(filter = "") {
+  const feed = document.getElementById("feed");
+  feed.innerHTML = "";
+  let lastDay = "";
+  let rowCount = 0;
+
+  const filtered = allVideoEntries.filter(v => v.title.toLowerCase().includes(filter.toLowerCase()));
+
+  for (const entry of filtered) {
+    const day = formatDay(entry.publishedAt);
+    if (day !== lastDay) {
+      rowCount++;
+      lastDay = day;
+    }
+
+    const div = document.createElement("div");
+    div.className = `entry ${rowCount % 2 === 0 ? "even" : "odd"}`;
+
+    const left = document.createElement("div");
+    const iframe = document.createElement("iframe");
+    iframe.src = `https://www.youtube.com/embed/${entry.vidId}`;
+    iframe.allowFullscreen = true;
+    left.appendChild(iframe);
+
+    if (entry.loc) {
+      const mapDiv = document.createElement("div");
+      mapDiv.className = "map";
+      left.appendChild(mapDiv);
+      const map = new google.maps.Map(mapDiv, {
+        center: { lat: entry.loc.latitude, lng: entry.loc.longitude },
+        zoom: 18,
+      });
+      new google.maps.Marker({
+        position: { lat: entry.loc.latitude, lng: entry.loc.longitude },
+        map: map,
+        title: entry.title
+      });
+    }
+
+    const right = document.createElement("div");
+    right.className = "description";
+    right.innerHTML = `<div class="title">${entry.title}</div>
+                       <div class="date">${formatDate(entry.publishedAt)}</div>
+                       ${entry.description}`;
+
+    div.appendChild(left);
+    div.appendChild(right);
+    feed.appendChild(div);
+  }
+}
+
+// SEARCH FILTER
+const searchBox = document.getElementById("searchBox");
+searchBox.addEventListener("input", () => {
+  renderFeed(searchBox.value);
+});
+
+// LAZY SCROLL
+window.addEventListener("scroll", () => {
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+    if (nextPageToken) {
+      fetchVideos();
+    }
+  }
+});
+
+// INIT
+function init() {
+  fetchVideos();
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_KEY&callback=init" async defer></script>
+</body>
+</html>
