@@ -76,6 +76,7 @@ async function fetchVideos() {
 
 // RENDER FEED
 function renderFeed(filter = "") {
+  console.log("renderFeed "+allVideoEntries.length+" in list");
   const feed = document.getElementById("feed");
   feed.innerHTML = "";
   let lastDay = "";
