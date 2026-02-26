@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Travel Log (Lazy Load)</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <style>
   body { font-family: sans-serif; margin: 20px; background: #f0f0f0; }
   h1 { text-align: center; }
@@ -24,7 +26,7 @@
 
 <script>
 // CONFIG
-const API_KEY = "YOUR_YOUTUBE_API_KEY"; // YouTube Data API key
+const API_KEY = "AIzaSyARU1uXNPtCeA4MLX4so2VpVE028A4BNig"; // YouTube Data API key
 const CHANNEL_ID = "UCAI8SedeznCrfphUGlOrm4A";
 const MAX_RESULTS = 10; // lazy load in chunks of 10
 let nextPageToken = "";
@@ -97,21 +99,24 @@ function renderFeed(filter = "") {
     iframe.allowFullscreen = true;
     left.appendChild(iframe);
 
-    if (entry.loc) {
-      const mapDiv = document.createElement("div");
-      mapDiv.className = "map";
-      left.appendChild(mapDiv);
-      const map = new google.maps.Map(mapDiv, {
-        center: { lat: entry.loc.latitude, lng: entry.loc.longitude },
-        zoom: 18,
-      });
-      new google.maps.Marker({
-        position: { lat: entry.loc.latitude, lng: entry.loc.longitude },
-        map: map,
-        title: entry.title
-      });
-    }
+if (entry.loc) {
+  const mapDiv = document.createElement("div");
+  mapDiv.className = "map";
+  left.appendChild(mapDiv);
 
+  const map = L.map(mapDiv).setView(
+    [entry.loc.latitude, entry.loc.longitude],
+    15
+  );
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(map);
+
+  L.marker([entry.loc.latitude, entry.loc.longitude])
+    .addTo(map)
+    .bindPopup(entry.title);
+}
     const right = document.createElement("div");
     right.className = "description";
     right.innerHTML = `<div class="title">${entry.title}</div>
@@ -144,6 +149,5 @@ function init() {
   fetchVideos();
 }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_KEY&callback=init" async defer></script>
 </body>
 </html>
