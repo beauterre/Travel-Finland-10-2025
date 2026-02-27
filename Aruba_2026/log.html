@@ -224,7 +224,7 @@ function getLangFromUrl() {
   return params.get("lang") || "";  // returns "" if no lang
 }
 
-const searchBox = document.getElementById("searchBox");
+//const searchBox = document.getElementById("searchBox");
 const initialFilter = getLangFromUrl();  // store filter
 searchBox.value = initialFilter;         // prefill search box
 renderFeed(initialFilter);               // initial filtered rendering
