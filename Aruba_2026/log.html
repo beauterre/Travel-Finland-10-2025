@@ -175,6 +175,9 @@ if (entry.loc) {
     div.appendChild(right);
     feed.appendChild(div);
   }
+
+    attachDescriptionToggle(); // attach click handlers to all current descriptions
+
 }
 
 // SEARCH FILTER
@@ -192,6 +195,18 @@ window.addEventListener("scroll", () => {
   }
 });
 
+function attachDescriptionToggle() {
+  document.querySelectorAll('.description').forEach(desc => {
+    // Avoid adding multiple listeners
+    if (!desc.dataset.toggleAttached) {
+      desc.addEventListener('click', () => {
+        desc.classList.toggle('open');
+      });
+      desc.dataset.toggleAttached = "true";
+    }
+  });
+}
+  
 // INIT
 fetchVideos();
 document.querySelectorAll('.description').forEach(desc => {
