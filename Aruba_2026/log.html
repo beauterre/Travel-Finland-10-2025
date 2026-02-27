@@ -90,7 +90,7 @@ function formatDay(dateStr) {
 }
 
 // FETCH CHUNK OF VIDEOS
-async function fetchVideos() {
+async function fetchVideos(filter = "") {
   // get uploads playlist ID if first load
   if (!allVideoEntries.length) {
     const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${API_KEY}`);
@@ -117,8 +117,7 @@ async function fetchVideos() {
 
     allVideoEntries.push({ vidId, title, description, publishedAt, loc });
   }
-
-  renderFeed();
+  renderFeed(filter); // <--- pass the current filter
 }
 
 // RENDER FEED
@@ -220,9 +219,9 @@ function getLangFromUrl() {
 //const searchBox = document.getElementById("searchBox");
 const initialFilter = getLangFromUrl();  // store filter
 searchBox.value = initialFilter;         // prefill search box
-renderFeed(initialFilter);               // initial filtered rendering
+//renderFeed(initialFilter);               // initial filtered rendering
 // INIT
-fetchVideos();
+fetchVideos(initialFilter);
 document.querySelectorAll('.description').forEach(desc => {
   desc.addEventListener('click', () => {
     desc.classList.toggle('open');
