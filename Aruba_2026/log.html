@@ -152,24 +152,26 @@ if (entry.loc) {
   mapDiv.className = "map";
   left.appendChild(mapDiv);
 
-// Map must be created AFTER mapDiv is in the DOM
-    // Use setTimeout 0 to ensure layout is ready
+  // Map must be created AFTER mapDiv is in the DOM
   setTimeout(() => {
-  const map = L.map(mapDiv).setView([entry.loc.latitude, entry.loc.longitude], 15);
+    const map = L.map(mapDiv).setView(
+      [entry.loc.latitude, entry.loc.longitude],
+      15
+    );
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap contributors"
-  }).addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
 
-  L.marker([entry.loc.latitude, entry.loc.longitude])
-    .addTo(map)
-    .bindPopup(entry.title);
+    L.marker([entry.loc.latitude, entry.loc.longitude])
+      .addTo(map)
+      .bindPopup(entry.title);
 
-  map.invalidateSize(); // ensure marker is centered
-}, 0); // <-- this closes the setTimeout properly
-
-  
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    map.invalidateSize(); // keep this INSIDE the timeout
+  }, 0);
+}
+    
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "&copy; OpenStreetMap contributors"
   }).addTo(map);
 
