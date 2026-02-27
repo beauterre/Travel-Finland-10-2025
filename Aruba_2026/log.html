@@ -152,11 +152,14 @@ if (entry.loc) {
   mapDiv.className = "map";
   left.appendChild(mapDiv);
 
-  const map = L.map(mapDiv).setView(
-    [entry.loc.latitude, entry.loc.longitude],
-    15
-  );
-
+// Map must be created AFTER mapDiv is in the DOM
+    // Use setTimeout 0 to ensure layout is ready
+    setTimeout(() => {
+      const map = L.map(mapDiv).setView(
+        [entry.loc.latitude, entry.loc.longitude],
+        15
+      );
+      
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "&copy; OpenStreetMap contributors"
   }).addTo(map);
