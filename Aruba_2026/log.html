@@ -228,7 +228,6 @@ function getLangFromUrl() {
 const initialFilter = getLangFromUrl();  // store filter
 searchBox.value = initialFilter;         // prefill search box
 renderFeed(initialFilter);               // initial filtered rendering
-const initialFilter = getLangFromUrl();
 // INIT
 fetchVideos();
 document.querySelectorAll('.description').forEach(desc => {
