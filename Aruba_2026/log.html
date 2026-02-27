@@ -60,7 +60,7 @@
 <body>
 
 <h1 style="display: flex; align-items: center; gap: 10px; font-size: 1.8em;">
-  Travel Log v27-02-2026-01:22
+  Travel Log v27-02-2026-01:28
   <a href="https://www.youtube.com/channel/UCpmL04Tei28Vunnw2p-_zUw" target="_blank" style="text-decoration: none; color: red;">
     <!-- YouTube icon SVG -->
     <svg height="24" width="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
@@ -210,6 +210,16 @@ function attachDescriptionToggle() {
   });
 }
   
+function getLangFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("lang") || "";  // returns "" if no lang
+}
+
+const searchBox = document.getElementById("searchBox");
+const initialFilter = getLangFromUrl();  // store filter
+searchBox.value = initialFilter;         // prefill search box
+renderFeed(initialFilter);               // initial filtered rendering
+const initialFilter = getLangFromUrl();
 // INIT
 fetchVideos();
 document.querySelectorAll('.description').forEach(desc => {
