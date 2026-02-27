@@ -11,16 +11,43 @@
   #searchBox { width: 100%; max-width: 500px; padding: 8px; margin: 20px auto; display: block; }
   .entry {
   display: flex;
-  flex-wrap: nowrap;        /* prevent wrapping of main columns */
+  flex-wrap: nowrap;        /* keep left + right side by side */
   gap: 10px;
   padding: 10px;
   border-radius: 6px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
-  .entry > div:first-child {
-  display: flex;            /* stack iframe + map vertically */
-  flex-direction: column;
+
+.entry > .left {
+  display: flex;
+  flex-direction: column;   /* stack iframe + map vertically */
   gap: 10px;
+  flex: 0 0 300px;          /* fixed width for video + map */
+}
+
+.entry > .left iframe,
+.entry > .left .map {
+  width: 100%;              /* fit column width */
+  height: 180px;            /* smaller preview/map height */
+}
+
+.entry > .right {
+  flex: 1;                  /* fill remaining space */
+  display: flex;
+  flex-direction: column;
+}
+
+.title { font-weight: bold; margin-bottom: 5px; }
+.date { font-size: 0.85em; color: #555; margin-bottom: 5px; }
+.description {
+  overflow: hidden;
+  max-height: 5em;          /* collapsed preview for long descriptions */
+  transition: max-height 0.3s ease;
+  cursor: pointer;
+}
+
+.description.open {
+  max-height: 50em;         /* expand when clicked */
 }
   .entry.even { background: #ffffff; }
   .entry.odd { background: #e9f5ff; }
