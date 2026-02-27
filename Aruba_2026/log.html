@@ -170,15 +170,6 @@ if (entry.loc) {
     map.invalidateSize(); // keep this INSIDE the timeout
   }, 0);
 }
-    
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap contributors"
-  }).addTo(map);
-
-  L.marker([entry.loc.latitude, entry.loc.longitude])
-    .addTo(map)
-    .bindPopup(entry.title);
-}
     const right = document.createElement("div");
     right.className = "description";
     right.innerHTML = `<div class="title">${entry.title}</div>
