@@ -193,6 +193,12 @@ window.addEventListener("scroll", () => {
 });
 
 // INIT
-fetchVideos();</script>
+fetchVideos();
+document.querySelectorAll('.description').forEach(desc => {
+  desc.addEventListener('click', () => {
+    desc.classList.toggle('open');
+  });
+});
+</script>
 </body>
 </html>
