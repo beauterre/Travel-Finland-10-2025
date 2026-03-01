@@ -156,7 +156,7 @@ if (entry.loc) {
   setTimeout(() => {
     const map = L.map(mapDiv).setView(
       [entry.loc.latitude, entry.loc.longitude],
-      15
+      10
     );
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
