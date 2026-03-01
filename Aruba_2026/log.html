@@ -5,10 +5,11 @@
 <title>Travel Log (Lazy Load)</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<style>
+
+  <style>
   body { font-family: sans-serif; margin: 20px; background: #f0f0f0; }
   h1 { text-align: center; }
-  #searchBox { width: 100%; max-width: 500px; padding: 8px; margin: 20px auto; display: block; }
+  #searchBox { width: 304%; max-width: 500px; padding: 8px; margin: 20px auto; display: block; }
   .entry {
   display: flex;
   flex-wrap: nowrap;        /* keep left + right side by side */
@@ -28,7 +29,7 @@
 .entry > .left iframe,
 .entry > .left .map {
   width: 100%;              /* fit column width */
-  height: 180px;            /* smaller preview/map height */
+  height: 171px;            /* smaller preview/map height */
 }
 
 .entry > .right {
@@ -51,7 +52,7 @@
 }
   .entry.even { background: #ffffff; }
   .entry.odd { background: #e9f5ff; }
-  iframe, .map { width: 480px; height: 270px; border: 0; }
+  iframe, .map { width: 304px; height: 171px; border: 0; display: inline-block; }
   .description { max-width: 480px; white-space: pre-wrap; }
   .title { font-weight: bold; margin-bottom: 5px; }
   .date { font-size: 0.85em; color: #555; margin-bottom: 5px; }
