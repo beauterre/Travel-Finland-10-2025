@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Travel Log (Paginated)</title>
@@ -11,51 +11,52 @@
   h1 { text-align: center; }
   
   .entry {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 10px;
-    padding: 10px;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom: 15px;
-  }
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-  .entry > .left {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex: 0 0 300px;
-  }
+.entry > .left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 0 0 300px;
+}
 
-  .entry > .left iframe,
-  .entry > .left .map {
-    width: 100%;
-    height: 171px;
-  }
+.entry > .left iframe,
+.entry > .left .map {
+  width: 100%;
+  height: 171px;
+}
 
-  .entry > .right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
+.entry > .right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 
-  .title { font-weight: bold; margin-bottom: 5px; }
-  .date { font-size: 0.85em; color: #555; margin-bottom: 5px; }
-  .description {
-    overflow: hidden;
-    max-height: 5em;
-    transition: max-height 0.3s ease;
-    cursor: pointer;
-    white-space: pre-wrap;
-  }
+.title { font-weight: bold; margin-bottom: 5px; }
+.date { font-size: 0.85em; color: #555; margin-bottom: 5px; }
+.description {
+  overflow: hidden;
+  max-height: 5em;
+  transition: max-height 0.3s ease;
+  cursor: pointer;
+}
 
-  .description.open {
-    max-height: 50em;
-  }
+.description.open {
+  max-height: 50em;
+}
   .entry.even { background: #ffffff; }
   .entry.odd { background: #e9f5ff; }
+  iframe, .map { width: 304px; height: 171px; border: 0; display: inline-block; }
+  .description { max-width: 480px; white-space: pre-wrap; }
+  .title { font-weight: bold; margin-bottom: 5px; }
+  .date { font-size: 0.85em; color: #555; margin-bottom: 5px; }
 
-  /* Pagination Styling */
   .pagination-container {
     display: flex;
     justify-content: center;
@@ -69,13 +70,10 @@
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
-    transition: background 0.2s;
   }
-  .pag-btn:hover { background: #e0e0e0; }
   .pag-btn:disabled { 
     opacity: 0.5; 
     cursor: not-allowed; 
-    background: #ddd; 
   }
 </style>
 </head>
@@ -98,136 +96,147 @@
 </div>
 
 <script>
-// CONFIG
-const API_KEY = "AIzaSyARU1uXNPtCeA4MLX4so2VpVE028A4BNig"; 
-const CHANNEL_ID = "UCpmL04Tei28Vunnw2p-_zUw";
-const MAX_RESULTS = 10; 
+var API_KEY = "AIzaSyARU1uXNPtCeA4MLX4so2VpVE028A4BNig"; 
+var CHANNEL_ID = "UCpmL04Tei28Vunnw2p-_zUw";
+var MAX_RESULTS = 10; 
 
-let uploadsId = "";
-let nextToken = "";
-let prevToken = "";
-let tokenHistory = []; // Stack to keep track of where we've been
+var uploadsId = "";
+var nextToken = "";
+var prevToken = "";
 
-// UTILS
 function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleString();
+  var d = new Date(dateStr);
+  return d.toLocaleString();
 }
 function formatDay(dateStr) {
-  return new Date(dateStr).toDateString();
+  var d = new Date(dateStr);
+  return d.toDateString();
 }
 
-async function fetchVideos(token = "") {
-  // 1. Ensure we have the uploads playlist ID
+async function fetchVideos(token) {
+  token = token || "";
+  
   if (!uploadsId) {
-    const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id={CHANNEL_ID}&key={API_KEY}`);
-    const chData = await chRes.json();
+    var chRes = await fetch("https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=" + CHANNEL_ID + "&key=" + API_KEY);
+    var chData = await chRes.json();
     uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
   }
 
-  // 2. Fetch playlist items
-  const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId={uploadsId}&maxResults={MAX_RESULTS}&pageToken={token}&key={API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
+  var url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=" + uploadsId + "&maxResults=" + MAX_RESULTS + "&pageToken=" + token + "&key=" + API_KEY;
+  var res = await fetch(url);
+  var data = await res.json();
 
-  // Update tokens for navigation
   nextToken = data.nextPageToken || "";
   prevToken = data.prevPageToken || "";
 
-  // Update buttons
   document.getElementById("nextBtn").disabled = !nextToken;
   document.getElementById("prevBtn").disabled = !prevToken;
 
-  const videoEntries = [];
-  for (const item of data.items) {
-    const vidId = item.contentDetails.videoId;
-    const snippet = item.snippet;
+  var currentEntries = [];
+  for (var i = 0; i < data.items.length; i++) {
+    var item = data.items[i];
+    var vidId = item.contentDetails.videoId;
+    var snippet = item.snippet;
 
-    // Fetch location details
-    const vidRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=recordingDetails&={vidId}&key={API_KEY}`);
-    const vidData = await vidRes.json();
-    const loc = vidData.items[0]?.recordingDetails?.location;
+    var vidRes = await fetch("https://www.googleapis.com/youtube/v3/videos?part=recordingDetails&id=" + vidId + "&key=" + API_KEY);
+    var vidData = await vidRes.json();
+    var loc = (vidData.items && vidData.items[0] && vidData.items[0].recordingDetails) ? vidData.items[0].recordingDetails.location : null;
 
-    videoEntries.push({ 
-      vidId, 
+    currentEntries.push({ 
+      vidId: vidId, 
       title: snippet.title, 
       description: snippet.description, 
       publishedAt: snippet.publishedAt, 
-      loc 
+      loc: loc 
     });
   }
-  renderFeed(videoEntries);
+  renderFeed(currentEntries);
 }
 
 function renderFeed(entries) {
-  const feed = document.getElementById("feed");
+  var feed = document.getElementById("feed");
   feed.innerHTML = "";
-  let rowCount = 0;
-  let lastDay = "";
+  var lastDay = "";
+  var rowCount = 0;
 
-  entries.forEach((entry) => {
-    const day = formatDay(entry.publishedAt);
+  for (var i = 0; i < entries.length; i++) {
+    var entry = entries[i];
+    var day = formatDay(entry.publishedAt);
     if (day !== lastDay) {
       rowCount++;
       lastDay = day;
     }
 
-    const div = document.createElement("div");
-    div.className = `entry ${rowCount % 2 === 0 ? "even" : "odd"}`;
+    var div = document.createElement("div");
+    div.className = "entry " + (rowCount % 2 === 0 ? "even" : "odd");
 
-    const left = document.createElement("div");
+    var left = document.createElement("div");
     left.className = "left";
-    
-    const iframe = document.createElement("iframe");
-    iframe.src = `https://www.youtube.com/embed/${entry.vidId}`;
+
+    var iframe = document.createElement("iframe");
+    iframe.src = "https://www.youtube.com/embed/" + entry.vidId;
     iframe.allowFullscreen = true;
     left.appendChild(iframe);
 
     if (entry.loc) {
-      const mapDiv = document.createElement("div");
+      var mapDiv = document.createElement("div");
       mapDiv.className = "map";
       left.appendChild(mapDiv);
 
-      setTimeout(() => {
-        const map = L.map(mapDiv).setView([entry.loc.latitude, entry.loc.longitude], 10);
+      setTimeout(function() {
+        var map = L.map(mapDiv).setView(
+          [entry.loc.latitude, entry.loc.longitude],
+          10
+        );
+
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: "&copy; OpenStreetMap"
+          attribution: "&copy; OpenStreetMap contributors"
         }).addTo(map);
-        L.marker([entry.loc.latitude, entry.loc.longitude]).addTo(map).bindPopup(entry.title);
+
+        L.marker([entry.loc.latitude, entry.loc.longitude])
+          .addTo(map)
+          .bindPopup(entry.title);
+
         map.invalidateSize();
       }, 0);
     }
 
-    const right = document.createElement("div");
-    right.className = "right";
-    
-    const descDiv = document.createElement("div");
-    descDiv.className = "description";
-    descDiv.innerHTML = `<div class="title">${entry.title}</div>
-                         <div class="date">${formatDate(entry.publishedAt)}</div>
-                         ${entry.description}`;
-    
-    descDiv.addEventListener('click', () => descDiv.classList.toggle('open'));
-    
-    right.appendChild(descDiv);
+    var right = document.createElement("div");
+    right.className = "description";
+    right.innerHTML = '<div class="title">' + entry.title + '</div>' +
+                     '<div class="date">' + formatDate(entry.publishedAt) + '</div>' +
+                     entry.description;
+
     div.appendChild(left);
     div.appendChild(right);
     feed.appendChild(div);
-  });
+  }
   
-  // Scroll to top when page changes
+  attachDescriptionToggle();
   window.scrollTo(0, 0);
 }
 
-// BUTTON EVENT LISTENERS
-document.getElementById("nextBtn").addEventListener("click", () => {
+function attachDescriptionToggle() {
+  var descs = document.querySelectorAll('.description');
+  for (var i = 0; i < descs.length; i++) {
+    var desc = descs[i];
+    if (!desc.dataset.toggleAttached) {
+      desc.onclick = function() {
+        this.classList.toggle('open');
+      };
+      desc.dataset.toggleAttached = "true";
+    }
+  }
+}
+
+document.getElementById("nextBtn").onclick = function() {
   if (nextToken) fetchVideos(nextToken);
-});
+};
 
-document.getElementById("prevBtn").addEventListener("click", () => {
+document.getElementById("prevBtn").onclick = function() {
   if (prevToken) fetchVideos(prevToken);
-});
+};
 
-// INIT
 fetchVideos();
 </script>
 </body>
