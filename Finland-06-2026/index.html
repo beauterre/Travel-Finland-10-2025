@@ -10,7 +10,6 @@
   body { font-family: sans-serif; margin: 20px; background: #f0f0f0; }
   h1 { text-align: center; }
   
-  /* The main container replaces the table */
   #feed-container { 
     margin: 0 auto; 
     width: 1000px; 
@@ -19,21 +18,18 @@
     gap: 15px;
   }
 
-  /* Each row is now a Grid */
   .entry-row {
     display: grid;
-    /* Default: 3 columns. Video (300), Map (300), Text (Auto) */
     grid-template-columns: 310px 310px 1fr; 
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 6px;
-    overflow: hidden; /* Ensures background color follows border radius */
-    background-color: #fff; /* Base color */
+    overflow: hidden;
+    background-color: #fff;
   }
   
   .entry-row.even { background-color: #ffffff; }
   .entry-row.odd { background-color: #e9f5ff; }
 
-  /* Layout for when map is hidden: Video (310) and Text (everything else) */
   .entry-row.no-map {
     grid-template-columns: 310px 1fr;
   }
@@ -89,7 +85,7 @@
 <body>
 
 <h1 style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.8em;">
-  Travel Log - FINLAND 2026
+  Travel Log v27-02-2026-01:47
   <a href="https://www.youtube.com/channel/UCpmL04Tei28Vunnw2p-_zUw" target="_blank" style="text-decoration: none; color: red;">
     <svg height="24" width="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
       <path d="M23.498 6.186c-.272-1.023-1.076-1.828-2.1-2.1C19.366 3.5 12 3.5 12 3.5s-7.366 0-9.398.586c-1.023.272-1.828 1.077-2.1 2.1C0 8.218 0 12 0 12s0 3.782.502 5.814c.272 1.023 1.077 1.828 2.1 2.1C4.634 20.5 12 20.5 12 20.5s7.366 0 9.398-.586c1.024-.272 1.828-1.077 2.1-2.1.502-2.032.502-5.814.502-5.814s0-3.782-.502-5.814zM9.75 15.02V8.98l6 3.02-6 3.02z"/>
@@ -107,9 +103,17 @@
 </div>
 
 <script>
+// CONFIG
 var API_KEY = "AIzaSyARU1uXNPtCeA4MLX4so2VpVE028A4BNig"; 
 var CHANNEL_ID = "UCpmL04Tei28Vunnw2p-_zUw";
 var MAX_RESULTS = 10; 
+
+// DATE CUTOFFS (Format: Year, Month-1, Day) 
+// Note: JavaScript months are 0-indexed (January = 0, May = 4, June = 5)
+var DATE_CONFIG = {
+  oldest: new Date(2026, 4, 20), // 20/05/2026
+  newest: new Date(2026, 5, 26)  // 26/06/2026
+};
 
 var uploadsId = "";
 var nextToken = "";
@@ -133,7 +137,7 @@ function createSkeleton() {
     iframe.id = "vid-" + i;
     vidCol.appendChild(iframe);
 
-    var mapCol =document.createElement("div");
+    var mapCol = document.createElement("div");
     mapCol.className = "col";
     var mapDiv = document.createElement("div");
     mapDiv.className = "map-container";
@@ -176,33 +180,52 @@ async function fetchVideos(token) {
     uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
   }
 
-  var url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=" + uploadsId + "&maxResults=" + MAX_RESULTS + "&pageToken=" + token + "&key=" + API_KEY;
-  var res = await fetch(url);
-  var data = await res.json();
+  var currentEntries = [];
+  var currentToken = token;
+  var fetchLimit = 0; // Safety break to prevent infinite loop if no videos match dates
 
-  nextToken = data.nextPageToken || "";
-  prevToken = data.prevPageToken || "";
+  // Keep fetching batches until we have 10 videos that fit the date range
+  while (currentEntries.length < MAX_RESULTS && fetchLimit < 5) {
+    var url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=" + uploadsId + "&maxResults=" + MAX_RESULTS + "&pageToken=" + currentToken + "&key=" + API_KEY;
+    var res = await fetch(url);
+    var data = await res.json();
+
+    // Store tokens for the overall pagination buttons
+    nextToken = data.nextPageToken || "";
+    prevToken = data.prevPageToken || "";
+
+    for (var i = 0; i < data.items.length; i++) {
+      var item = data.items[i];
+      var publishedDate = new Date(item.snippet.publishedAt);
+
+      // DATE FILTERING LOGIC
+      if (publishedDate >= DATE_CONFIG.oldest && publishedDate <= DATE_CONFIG.newest) {
+        var vidId = item.contentDetails.videoId;
+        var snippet = item.snippet;
+
+        var vidRes = await fetch("https://www.googleapis.com/youtube/v3/videos?part=recordingDetails&id=" + vidId + "&key=" + API_KEY);
+        var vidData = await vidRes.json();
+        var loc = (vidData.items && vidData.items[0] && vidData.items[0].recordingDetails) ? vidData.items[0].recordingDetails.location : null;
+
+        currentEntries.push({ 
+          vidId: vidId, 
+          title: snippet.title, 
+          description: snippet.description, 
+          publishedAt: snippet.publishedAt, 
+          loc: loc 
+        });
+
+        if (currentEntries.length === MAX_RESULTS) break;
+      }
+    }
+    
+    currentToken = data.nextPageToken || "";
+    if (!currentToken) break;
+    fetchLimit++;
+  }
+
   document.getElementById("nextBtn").disabled = !nextToken;
   document.getElementById("prevBtn").disabled = !prevToken;
-
-  var currentEntries = [];
-  for (var i = 0; i < data.items.length; i++) {
-    var item = data.items[i];
-    var vidId = item.contentDetails.videoId;
-    var snippet = item.snippet;
-
-    var vidRes = await fetch("https://www.googleapis.com/youtube/v3/videos?part=recordingDetails&id=" + vidId + "&key=" + API_KEY);
-    var vidData = await vidRes.json();
-    var loc = (vidData.items && vidData.items[0] && vidData.items[0].recordingDetails) ? vidData.items[0].recordingDetails.location : null;
-
-    currentEntries.push({ 
-      vidId: vidId, 
-      title: snippet.title, 
-      description: snippet.description, 
-      publishedAt: snippet.publishedAt, 
-      loc: loc 
-    });
-  }
   updateSlots(currentEntries);
 }
 
