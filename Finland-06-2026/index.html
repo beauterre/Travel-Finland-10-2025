@@ -11,51 +11,50 @@
   h1 { text-align: center; }
   
   .entry {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+  }
 
-.entry > .left {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 0 0 300px;
-}
+  .entry > .left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 0 0 300px;
+  }
 
-.entry > .left iframe,
-.entry > .left .map {
-  width: 100%;
-  height: 171px;
-}
+  .entry > .left iframe,
+  .entry > .left .map-container {
+    width: 100%;
+    height: 171px;
+    border: 0;
+  }
 
-.entry > .right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+  .entry > .right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
 
-.title { font-weight: bold; margin-bottom: 5px; }
-.date { font-size: 0.85em; color: #555; margin-bottom: 5px; }
-.description {
-  overflow: hidden;
-  max-height: 5em;
-  transition: max-height 0.3s ease;
-  cursor: pointer;
-}
-
-.description.open {
-  max-height: 50em;
-}
-  .entry.even { background: #ffffff; }
-  .entry.odd { background: #e9f5ff; }
-  iframe, .map { width: 304px; height: 171px; border: 0; display: inline-block; }
-  .description { max-width: 480px; white-space: pre-wrap; }
   .title { font-weight: bold; margin-bottom: 5px; }
   .date { font-size: 0.85em; color: #555; margin-bottom: 5px; }
+  .description {
+    overflow: hidden;
+    max-height: 5em;
+    transition: max-height 0.3s ease;
+    cursor: pointer;
+    white-space: pre-wrap;
+  }
+
+  .description.open {
+    max-height: 50em;
+  }
+  .entry.even { background: #ffffff; }
+  .entry.odd { background: #e9f5ff; }
 
   .pagination-container {
     display: flex;
@@ -88,7 +87,9 @@
   </a>
 </h1>
 
-<div id="feed"></div>
+<div id="feed">
+  <!-- 10 Slots will be generated here by JS on load -->
+</div>
 
 <div class="pagination-container">
   <button id="prevBtn" class="pag-btn" disabled>← Newer</button>
@@ -104,18 +105,66 @@ var uploadsId = "";
 var nextToken = "";
 var prevToken = "";
 
+// This will store our 10 permanent map objects
+var mapPool = []; 
+
 function formatDate(dateStr) {
-  var d = new Date(dateStr);
-  return d.toLocaleString();
+  return new Date(dateStr).toLocaleString();
 }
-function formatDay(dateStr) {
-  var d = new Date(dateStr);
-  return d.toDateString();
+
+// 1. BUILD THE SKELETON (Run only once at start)
+function createSkeleton() {
+  var feed = document.getElementById("feed");
+  for (var i = 0; i < 10; i++) {
+    var div = document.createElement("div");
+    div.className = "entry " + (i % 2 === 0 ? "even" : "odd");
+    div.style.display = "none"; // Hide until data arrives
+
+    var left = document.createElement("div");
+    left.className = "left";
+
+    var iframe = document.createElement("iframe");
+    iframe.id = "vid-" + i;
+    left.appendChild(iframe);
+
+    var mapDiv = document.createElement("div");
+    mapDiv.className = "map-container";
+    mapDiv.id = "map-div-" + i;
+    left.appendChild(mapDiv);
+
+    var right = document.createElement("div");
+    right.className = "right";
+    
+    var descDiv = document.createElement("div");
+    descDiv.className = "description";
+    descDiv.id = "desc-" + i;
+    descDiv.onclick = function() { this.classList.toggle('open'); };
+    
+    right.appendChild(descDiv);
+    div.appendChild(left);
+    div.appendChild(right);
+    feed.appendChild(div);
+
+    // Create the map object ONCE for this slot
+    // We initialize it at 0,0 and hide it until needed
+    var map = L.map(mapDiv).setView([0, 0], 10);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap"
+    }).addTo(map);
+    
+    var marker = L.marker([0, 0]).addTo(map);
+    
+    mapPool.push({
+      map: map,
+      marker: marker,
+      container: mapDiv,
+      row: div
+    });
+  }
 }
 
 async function fetchVideos(token) {
   token = token || "";
-  
   if (!uploadsId) {
     var chRes = await fetch("https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=" + CHANNEL_ID + "&key=" + API_KEY);
     var chData = await chRes.json();
@@ -128,7 +177,6 @@ async function fetchVideos(token) {
 
   nextToken = data.nextPageToken || "";
   prevToken = data.prevPageToken || "";
-
   document.getElementById("nextBtn").disabled = !nextToken;
   document.getElementById("prevBtn").disabled = !prevToken;
 
@@ -150,83 +198,49 @@ async function fetchVideos(token) {
       loc: loc 
     });
   }
-  renderFeed(currentEntries);
+  updateSlots(currentEntries);
 }
 
-function renderFeed(entries) {
-  var feed = document.getElementById("feed");
-  feed.innerHTML = "";
-  var lastDay = "";
-  var rowCount = 0;
-
-  for (var i = 0; i < entries.length; i++) {
+function updateSlots(entries) {
+  // Loop through our 10 slots
+  for (var i = 0; i < 10; i++) {
+    var slot = mapPool[i];
     var entry = entries[i];
-    var day = formatDay(entry.publishedAt);
-    if (day !== lastDay) {
-      rowCount++;
-      lastDay = day;
+
+    if (entry) {
+      slot.row.style.display = "flex";
+      
+      // Update Video
+      document.getElementById("vid-" + i).src = "https://www.youtube.com/embed/" + entry.vidId;
+      
+      // Update Text
+      var descDiv = document.getElementById("desc-" + i);
+      descDiv.classList.remove('open');
+      descDiv.innerHTML = '<div class="title">' + entry.title + '</div>' +
+                          '<div class="date">' + formatDate(entry.publishedAt) + '</div>' +
+                          entry.description;
+
+      // Update Map
+      if (entry.loc && entry.loc.latitude !== undefined && entry.loc.longitude !== undefined) {
+        var lat = parseFloat(entry.loc.latitude);
+        var lon = parseFloat(entry.loc.longitude);
+        if (!isNaN(lat) && !isNaN(lon)) {
+          slot.container.style.display = "block";
+          slot.map.setView([lat, lon], 10);
+          slot.marker.setLatLng([lat, lon]);
+          slot.marker.bindPopup(entry.title);
+          setTimeout(function() { slot.map.invalidateSize(); }, 100);
+        } else {
+          slot.container.style.display = "none";
+        }
+      } else {
+        slot.container.style.display = "none";
+      }
+    } else {
+      slot.row.style.display = "none";
     }
-
-    var div = document.createElement("div");
-    div.className = "entry " + (rowCount % 2 === 0 ? "even" : "odd");
-
-    var left = document.createElement("div");
-    left.className = "left";
-
-    var iframe = document.createElement("iframe");
-    iframe.src = "https://www.youtube.com/embed/" + entry.vidId;
-    iframe.allowFullscreen = true;
-    left.appendChild(iframe);
-
-    if (entry.loc) {
-      var mapDiv = document.createElement("div");
-      mapDiv.className = "map";
-      left.appendChild(mapDiv);
-
-      setTimeout(function() {
-        var map = L.map(mapDiv).setView(
-          [entry.loc.latitude, entry.loc.longitude],
-          10
-        );
-
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: "&copy; OpenStreetMap contributors"
-        }).addTo(map);
-
-        L.marker([entry.loc.latitude, entry.loc.longitude])
-          .addTo(map)
-          .bindPopup(entry.title);
-
-        map.invalidateSize();
-      }, 0);
-    }
-
-    var right = document.createElement("div");
-    right.className = "description";
-    right.innerHTML = '<div class="title">' + entry.title + '</div>' +
-                     '<div class="date">' + formatDate(entry.publishedAt) + '</div>' +
-                     entry.description;
-
-    div.appendChild(left);
-    div.appendChild(right);
-    feed.appendChild(div);
   }
-  
-  attachDescriptionToggle();
   window.scrollTo(0, 0);
-}
-
-function attachDescriptionToggle() {
-  var descs = document.querySelectorAll('.description');
-  for (var i = 0; i < descs.length; i++) {
-    var desc = descs[i];
-    if (!desc.dataset.toggleAttached) {
-      desc.onclick = function() {
-        this.classList.toggle('open');
-      };
-      desc.dataset.toggleAttached = "true";
-    }
-  }
 }
 
 document.getElementById("nextBtn").onclick = function() {
@@ -237,6 +251,8 @@ document.getElementById("prevBtn").onclick = function() {
   if (prevToken) fetchVideos(prevToken);
 };
 
+// START
+createSkeleton();
 fetchVideos();
 </script>
 </body>
