@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Travel Log (Paginated)</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <style>
+  body { font-family: sans-serif; margin: 20px; background: #f0f0f0; }
+  h1 { text-align: center; }
+  
+  .entry {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+  }
+
+  .entry > .left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 0 0 300px;
+  }
+
+  .entry > .left iframe,
+  .entry > .left .map {
+    width: 100%;
+    height: 171px;
+  }
+
+  .entry > .right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .title { font-weight: bold; margin-bottom: 5px; }
+  .date { font-size: 0.85em; color: #555; margin-bottom: 5px; }
+  .description {
+    overflow: hidden;
+    max-height: 5em;
+    transition: max-height 0.3s ease;
+    cursor: pointer;
+    white-space: pre-wrap;
+  }
+
+  .description.open {
+    max-height: 50em;
+  }
+  .entry.even { background: #ffffff; }
+  .entry.odd { background: #e9f5ff; }
+
+  /* Pagination Styling */
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+  }
+  .pag-btn {
+    padding: 10px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .pag-btn:hover { background: #e0e0e0; }
+  .pag-btn:disabled { 
+    opacity: 0.5; 
+    cursor: not-allowed; 
+    background: #ddd; 
+  }
+</style>
+</head>
+<body>
+
+<h1 style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.8em;">
+  Travel Log v27-02-2026-01:47
+  <a href="https://www.youtube.com/channel/UCpmL04Tei28Vunnw2p-_zUw" target="_blank" style="text-decoration: none; color: red;">
+    <svg height="24" width="24" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
+      <path d="M23.498 6.186c-.272-1.023-1.076-1.828-2.1-2.1C19.366 3.5 12 3.5 12 3.5s-7.366 0-9.398.586c-1.023.272-1.828 1.077-2.1 2.1C0 8.218 0 12 0 12s0 3.782.502 5.814c.272 1.023 1.077 1.828 2.1 2.1C4.634 20.5 12 20.5 12 20.5s7.366 0 9.398-.586c1.024-.272 1.828-1.077 2.1-2.1.502-2.032.502-5.814.502-5.814s0-3.782-.502-5.814zM9.75 15.02V8.98l6 3.02-6 3.02z"/>
+    </svg>
+  </a>
+</h1>
+
+<div id="feed"></div>
+
+<div class="pagination-container">
+  <button id="prevBtn" class="pag-btn" disabled>← Newer</button>
+  <button id="nextBtn" class="pag-btn">Older →</button>
+</div>
+
+<script>
+// CONFIG
+const API_KEY = "AIzaSyARU1uXNPtCeA4MLX4so2VpVE028A4BNig"; 
+const CHANNEL_ID = "UCpmL04Tei28Vunnw2p-_zUw";
+const MAX_RESULTS = 10; 
+
+let uploadsId = "";
+let nextToken = "";
+let prevToken = "";
+let tokenHistory = []; // Stack to keep track of where we've been
+
+// UTILS
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleString();
+}
+function formatDay(dateStr) {
+  return new Date(dateStr).toDateString();
+}
+
+async function fetchVideos(token = "") {
+  // 1. Ensure we have the uploads playlist ID
+  if (!uploadsId) {
+    const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id={CHANNEL_ID}&key={API_KEY}`);
+    const chData = await chRes.json();
+    uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
+  }
+
+  // 2. Fetch playlist items
+  const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId={uploadsId}&maxResults={MAX_RESULTS}&pageToken={token}&key={API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+
+  // Update tokens for navigation
+  nextToken = data.nextPageToken || "";
+  prevToken = data.prevPageToken || "";
+
+  // Update buttons
+  document.getElementById("nextBtn").disabled = !nextToken;
+  document.getElementById("prevBtn").disabled = !prevToken;
+
+  const videoEntries = [];
+  for (const item of data.items) {
+    const vidId = item.contentDetails.videoId;
+    const snippet = item.snippet;
+
+    // Fetch location details
+    const vidRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=recordingDetails&={vidId}&key={API_KEY}`);
+    const vidData = await vidRes.json();
+    const loc = vidData.items[0]?.recordingDetails?.location;
+
+    videoEntries.push({ 
+      vidId, 
+      title: snippet.title, 
+      description: snippet.description, 
+      publishedAt: snippet.publishedAt, 
+      loc 
+    });
+  }
+  renderFeed(videoEntries);
+}
+
+function renderFeed(entries) {
+  const feed = document.getElementById("feed");
+  feed.innerHTML = "";
+  let rowCount = 0;
+  let lastDay = "";
+
+  entries.forEach((entry) => {
+    const day = formatDay(entry.publishedAt);
+    if (day !== lastDay) {
+      rowCount++;
+      lastDay = day;
+    }
+
+    const div = document.createElement("div");
+    div.className = `entry ${rowCount % 2 === 0 ? "even" : "odd"}`;
+
+    const left = document.createElement("div");
+    left.className = "left";
+    
+    const iframe = document.createElement("iframe");
+    iframe.src = `https://www.youtube.com/embed/${entry.vidId}`;
+    iframe.allowFullscreen = true;
+    left.appendChild(iframe);
+
+    if (entry.loc) {
+      const mapDiv = document.createElement("div");
+      mapDiv.className = "map";
+      left.appendChild(mapDiv);
+
+      setTimeout(() => {
+        const map = L.map(mapDiv).setView([entry.loc.latitude, entry.loc.longitude], 10);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "&copy; OpenStreetMap"
+        }).addTo(map);
+        L.marker([entry.loc.latitude, entry.loc.longitude]).addTo(map).bindPopup(entry.title);
+        map.invalidateSize();
+      }, 0);
+    }
+
+    const right = document.createElement("div");
+    right.className = "right";
+    
+    const descDiv = document.createElement("div");
+    descDiv.className = "description";
+    descDiv.innerHTML = `<div class="title">${entry.title}</div>
+                         <div class="date">${formatDate(entry.publishedAt)}</div>
+                         ${entry.description}`;
+    
+    descDiv.addEventListener('click', () => descDiv.classList.toggle('open'));
+    
+    right.appendChild(descDiv);
+    div.appendChild(left);
+    div.appendChild(right);
+    feed.appendChild(div);
+  });
+  
+  // Scroll to top when page changes
+  window.scrollTo(0, 0);
+}
+
+// BUTTON EVENT LISTENERS
+document.getElementById("nextBtn").addEventListener("click", () => {
+  if (nextToken) fetchVideos(nextToken);
+});
+
+document.getElementById("prevBtn").addEventListener("click", () => {
+  if (prevToken) fetchVideos(prevToken);
+});
+
+// INIT
+fetchVideos();
+</script>
+</body>
+</html>
