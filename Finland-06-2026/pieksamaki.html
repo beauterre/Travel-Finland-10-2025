@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hjalmar-Finland Gallery</title>
+    <title>Kulmala (op het hoekje)</title>
     <style>
         body {
             font-family: sans-serif;
@@ -64,7 +64,7 @@
 </head>
 <body>
 
-    <h1>Finland Trip Gallery</h1>
+    <h1>Kulmala (op het hoekje)</h1>
     <div class="grid" id="gallery"></div>
 
     <div id="overlay" onclick="this.style.display='none'">
@@ -72,68 +72,78 @@
     </div>
 
     <script>
-        // This is the list of filenames extracted from your directory
         const images = [
             "MAPS.jpg",  
-	"pieksama_kartta.png","ORIGINAL (1).jpg",
-		"ORIGINAL (10).jpg", "ORIGINAL (100).jpg", 
-            "ORIGINAL (11).jpg", "ORIGINAL (12).jpg", "ORIGINAL (13).jpg", "ORIGINAL (14).jpg", 
-            "ORIGINAL (15).jpg", "ORIGINAL (16).jpg", "ORIGINAL (17).jpg", "ORIGINAL (18).jpg", 
-            "ORIGINAL (19).jpg", "ORIGINAL (2).jpg", "ORIGINAL (20).jpg", "ORIGINAL (21).jpg", 
-            "ORIGINAL (22).jpg", "ORIGINAL (23).jpg", "ORIGINAL (24).jpg", "ORIGINAL (25).jpg", 
-            "ORIGINAL (26).jpg", "ORIGINAL (27).jpg", "ORIGINAL (28).jpg", "ORIGINAL (29).jpg", 
-            "ORIGINAL (3).jpg", "ORIGINAL (30).jpg", "ORIGINAL (31).jpg", "ORIGINAL (32).jpg", 
+            "pieksama_kartta.png",
+            "ORIGINAL (1).jpg", "ORIGINAL (2).jpg", "ORIGINAL (3).jpg", "ORIGINAL (4).jpg", 
+            "ORIGINAL (5).jpg", "ORIGINAL (6).jpg", "ORIGINAL (7).jpg", "ORIGINAL (8).jpg", 
+            "ORIGINAL (9).jpg", "ORIGINAL (10).jpg", "ORIGINAL (11).jpg", "ORIGINAL (12).jpg", 
+            "ORIGINAL (13).jpg", "ORIGINAL (14).jpg", "ORIGINAL (15).jpg", "ORIGINAL (16).jpg", 
+            "ORIGINAL (17).jpg", "ORIGINAL (18).jpg", "ORIGINAL (19).jpg", "ORIGINAL (20).jpg", 
+            "ORIGINAL (21).jpg", "ORIGINAL (22).jpg", "ORIGINAL (23).jpg", "ORIGINAL (24).jpg", 
+            "ORIGINAL (25).jpg", "ORIGINAL (26).jpg", "ORIGINAL (27).jpg", "ORIGINAL (28).jpg", 
+            "ORIGINAL (29).jpg", "ORIGINAL (30).jpg", "ORIGINAL (31).jpg", "ORIGINAL (32).jpg", 
             "ORIGINAL (33).jpg", "ORIGINAL (34).jpg", "ORIGINAL (35).jpg", "ORIGINAL (36).jpg", 
-            "ORIGINAL (37).jpg", "ORIGINAL (38).jpg", "ORIGINAL (39).jpg", "ORIGINAL (4).jpg", 
-            "ORIGINAL (40).jpg", "ORIGINAL (41).jpg", "ORIGINAL (42).jpg", "ORIGINAL (43).jpg", 
-            "ORIGINAL (44).jpg", "ORIGINAL (45).jpg", "ORIGINAL (46).jpg", "ORIGINAL (47).jpg", 
-            "ORIGINAL (48).jpg", "ORIGINAL (49).JPG", "ORIGINAL (5).jpg", "ORIGINAL (50).jpg", 
-            "ORIGINAL (51).jpg", "ORIGINAL (52).jpg", "ORIGINAL (53).jpg", "ORIGINAL (54).jpg", 
-            "ORIGINAL (55).jpg", "ORIGINAL (56).jpg", "ORIGINAL (57).jpg", "ORIGINAL (58).jpg", 
-            "ORIGINAL (59).jpg", "ORIGINAL (6).jpg", "ORIGINAL (60).jpg", "ORIGINAL (61).jpg", 
-            "ORIGINAL (62).jpg", "ORIGINAL (63).jpg", "ORIGINAL (64).jpg", "ORIGINAL (65).jpg", 
-            "ORIGINAL (66).jpg", "ORIGINAL (67).jpg", "ORIGINAL (68).jpg", "ORIGINAL (69).jpg", 
-            "ORIGINAL (7).jpg", "ORIGINAL (70).jpg", "ORIGINAL (71).jpg", "ORIGINAL (72).jpg", 
+            "ORIGINAL (37).jpg", "ORIGINAL (38).jpg", "ORIGINAL (39).jpg", "ORIGINAL (40).jpg", 
+            "ORIGINAL (41).jpg", "ORIGINAL (42).jpg", "ORIGINAL (43).jpg", "ORIGINAL (44).jpg", 
+            "ORIGINAL (45).jpg", "ORIGINAL (46).jpg", "ORIGINAL (47).jpg", "ORIGINAL (48).jpg", 
+            "ORIGINAL (49).JPG", "ORIGINAL (50).jpg", "ORIGINAL (51).jpg", "ORIGINAL (52).jpg", 
+            "ORIGINAL (53).jpg", "ORIGINAL (54).jpg", "ORIGINAL (55).jpg", "ORIGINAL (56).jpg", 
+            "ORIGINAL (57).jpg", "ORIGINAL (58).jpg", "ORIGINAL (59).jpg", "ORIGINAL (60).jpg", 
+            "ORIGINAL (61).jpg", "ORIGINAL (62).jpg", "ORIGINAL (63).jpg", "ORIGINAL (64).jpg", 
+            "ORIGINAL (65).jpg", "ORIGINAL (66).jpg", "ORIGINAL (67).jpg", "ORIGINAL (68).jpg", 
+            "ORIGINAL (69).jpg", "ORIGINAL (70).jpg", "ORIGINAL (71).jpg", "ORIGINAL (72).jpg", 
             "ORIGINAL (73).jpg", "ORIGINAL (74).jpg", "ORIGINAL (75).jpg", "ORIGINAL (76).jpg", 
-            "ORIGINAL (77).jpg", "ORIGINAL (78).jpg", "ORIGINAL (79).jpg", "ORIGINAL (8).jpg", 
-            "ORIGINAL (80).jpg", "ORIGINAL (81).jpg", "ORIGINAL (82).jpg", "ORIGINAL (83).jpg", 
-            "ORIGINAL (84).jpg", "ORIGINAL (85).jpg", "ORIGINAL (9).jpg", "ORIGINAL (94).jpg", 
-            "ORIGINAL (95).jpg", "ORIGINAL (96).jpg", "ORIGINAL (97).jpg", "ORIGINAL (98).jpg", 
-            "ORIGINAL (99).jpg", "ORIGINAL - 2026-08-01T221722.101.jpg", "ORIGINAL - 2026-08-01T221730.904.jpg", 
-            "ORIGINAL - 2026-08-01T221735.276.jpg", "ORIGINAL - 2026-08-01T221740.703.jpg", "ORIGINAL - 2026-08-01T221745.953.jpg", 
-            "ORIGINAL - 2026-08-01T221752.206.jpg", "ORIGINAL - 2026-08-01T221759.577.jpg", "ORIGINAL - 2026-08-01T221804.197.jpg", 
-            "ORIGINAL - 2026-08-01T221809.330.jpg", "ORIGINAL - 2026-08-01T221814.951.jpg", "ORIGINAL - 2026-08-01T221819.666.jpg", 
-            "ORIGINAL - 2026-08-01T221824.156.jpg", "ORIGINAL - 2026-08-01T221828.455.jpg", "ORIGINAL - 2026-08-01T221835.742.jpg", 
-            "ORIGINAL - 2026-08-01T221840.601.jpg", "ORIGINAL - 2026-08-01T221845.581.jpg", "ORIGINAL - 2026-08-01T221851.380.jpg", 
-            "ORIGINAL - 2026-08-01T221856.029.jpg", "ORIGINAL - 2026-08-01T221900.985.jpg", "ORIGINAL - 2026-08-01T221906.374.jpg", 
-            "ORIGINAL - 2026-08-01T221914.982.jpg", "ORIGINAL - 2026-08-01T221919.897.jpg", "ORIGINAL - 2026-08-01T221925.414.jpg", 
-            "ORIGINAL - 2026-08-01T221929.895.jpg", "ORIGINAL - 2026-08-01T221933.874.jpg", "ORIGINAL - 2026-08-01T221938.020.jpg", 
-            "ORIGINAL - 2026-08-01T221943.435.jpg", "ORIGINAL - 2026-08-01T221947.995.jpg", "ORIGINAL - 2026-08-01T221952.401.jpg", 
-            "ORIGINAL - 2026-08-01T221959.429.jpg", "ORIGINAL - 2026-08-01T222007.668.jpg", "ORIGINAL - 2026-08-01T222013.463.jpg", 
-            "ORIGINAL - 2026-08-01T222018.841.jpg", "ORIGINAL - 2026-08-01T222023.971.jpg", "ORIGINAL - 2026-08-01T222034.203.jpg", 
-            "ORIGINAL - 2026-08-01T222044.071.jpg", "ORIGINAL - 2026-08-01T222048.692.jpg", "ORIGINAL - 2026-08-01T222053.043.jpg", 
-            "ORIGINAL - 2026-08-01T222058.172.jpg", "ORIGINAL - 2026-08-01T222102.876.jpg", "ORIGINAL - 2026-08-01T222106.946.jpg", 
-            "ORIGINAL - 2026-08-01T222111.835.jpg", "ORIGINAL - 2026-08-01T222117.620.jpg", "ORIGINAL - 2026-08-01T222121.880.jpg", 
-            "ORIGINAL - 2026-08-01T222126.346.jpg", "ORIGINAL - 2026-08-01T222130.798.jpg", "ORIGINAL - 2026-08-01T222136.303.jpg", 
-            "ORIGINAL - 2026-08-01T222143.221.jpg", "ORIGINAL - 2026-08-01T222147.449.jpg", "ORIGINAL - 2026-08-01T222152.632.jpg", 
-            "ORIGINAL - 2026-08-01T222205.543.jpg", "ORIGINAL - 2026-08-01T222210.753.jpg", "ORIGINAL - 2026-08-01T222216.230.jpg", 
-            "ORIGINAL - 2026-08-01T222220.637.jpg", "ORIGINAL - 2026-08-01T222225.522.jpg", "ORIGINAL - 2026-08-01T222229.989.jpg", 
-            "ORIGINAL - 2026-08-01T222234.828.jpg", "ORIGINAL - 2026-08-01T222238.809.jpg", "ORIGINAL.jpg"
-
+            "ORIGINAL (77).jpg", "ORIGINAL (78).jpg", "ORIGINAL (79).jpg", "ORIGINAL (80).jpg", 
+            "ORIGINAL (81).jpg", "ORIGINAL (82).jpg", "ORIGINAL (83).jpg", "ORIGINAL (84).jpg", 
+            "ORIGINAL (85).jpg", "ORIGINAL (86).jpg", "ORIGINAL (87).jpg", "ORIGINAL (88).jpg", 
+            "ORIGINAL (89).jpg", "ORIGINAL (90).jpg", "ORIGINAL (91).jpg", "ORIGINAL (92).jpg", 
+            "ORIGINAL (94).jpg", "ORIGINAL (95).jpg", "ORIGINAL (96).jpg", "ORIGINAL (97).jpg", 
+            "ORIGINAL (98).jpg", "ORIGINAL (99).jpg", "ORIGINAL (100).jpg",
+            "ORIGINAL (90).webp", "ORIGINAL (91).webp", "ORIGINAL (92).webp",
+            "ORIGINAL - 2026-08-01T221722.101.jpg", "ORIGINAL - 2026-08-01T221730.904.jpg", 
+            "ORIGINAL - 2026-08-01T221735.276.jpg", "ORIGINAL - 2026-08-01T221740.703.jpg", 
+            "ORIGINAL - 2026-08-01T221745.953.jpg", "ORIGINAL - 2026-08-01T221752.206.jpg", 
+            "ORIGINAL - 2026-08-01T221759.577.jpg", "ORIGINAL - 2026-08-01T221804.197.jpg", 
+            "ORIGINAL - 2026-08-01T221809.330.jpg", "ORIGINAL - 2026-08-01T221814.951.jpg", 
+            "ORIGINAL - 2026-08-01T221819.666.jpg", "ORIGINAL - 2026-08-01T221824.156.jpg", 
+            "ORIGINAL - 2026-08-01T221828.455.jpg", "ORIGINAL - 2026-08-01T221835.742.jpg", 
+            "ORIGINAL - 2026-08-01T221840.601.jpg", "ORIGINAL - 2026-08-01T221845.581.jpg", 
+            "ORIGINAL - 2026-08-01T221851.380.jpg", "ORIGINAL - 2026-08-01T221856.029.jpg", 
+            "ORIGINAL - 2026-08-01T221900.985.jpg", "ORIGINAL - 2026-08-01T221906.374.jpg", 
+            "ORIGINAL - 2026-08-01T221914.982.jpg", "ORIGINAL - 2026-08-01T221919.897.jpg", 
+            "ORIGINAL - 2026-08-01T221925.414.jpg", "ORIGINAL - 2026-08-01T221929.895.jpg", 
+            "ORIGINAL - 2026-08-01T221933.874.jpg", "ORIGINAL - 2026-08-01T221938.020.jpg", 
+            "ORIGINAL - 2026-08-01T221943.435.jpg", "ORIGINAL - 2026-08-01T221947.995.jpg", 
+            "ORIGINAL - 2026-08-01T221952.401.jpg", "ORIGINAL - 2026-08-01T221959.429.jpg", 
+            "ORIGINAL - 2026-08-01T222007.668.jpg", "ORIGINAL - 2026-08-01T222013.463.jpg", 
+            "ORIGINAL - 2026-08-01T222018.841.jpg", "ORIGINAL - 2026-08-01T222023.971.jpg", 
+            "ORIGINAL - 2026-08-01T222029.082.jpg", "ORIGINAL - 2026-08-01T222034.203.jpg", 
+            "ORIGINAL - 2026-08-01T222044.071.jpg", "ORIGINAL - 2026-08-01T222048.692.jpg", 
+            "ORIGINAL - 2026-08-01T222053.043.jpg", "ORIGINAL - 2026-08-01T222058.172.jpg", 
+            "ORIGINAL - 2026-08-01T222102.876.jpg", "ORIGINAL - 2026-08-01T222106.946.jpg", 
+            "ORIGINAL - 2026-08-01T222111.835.jpg", "ORIGINAL - 2026-08-01T222117.620.jpg", 
+            "ORIGINAL - 2026-08-01T222121.880.jpg", "ORIGINAL - 2026-08-01T222126.346.jpg", 
+            "ORIGINAL - 2026-08-01T222130.798.jpg", "ORIGINAL - 2026-08-01T222136.303.jpg", 
+            "ORIGINAL - 2026-08-01T222143.221.jpg", "ORIGINAL - 2026-08-01T222147.449.jpg", 
+            "ORIGINAL - 2026-08-01T222152.632.jpg", "ORIGINAL - 2026-08-01T222205.543.jpg", 
+            "ORIGINAL - 2026-08-01T222210.753.jpg", "ORIGINAL - 2026-08-01T222216.230.jpg", 
+            "ORIGINAL - 2026-08-01T222220.637.jpg", "ORIGINAL - 2026-08-01T222225.522.jpg", 
+            "ORIGINAL - 2026-08-01T222229.989.jpg", "ORIGINAL - 2026-08-01T222234.828.jpg", 
+            "ORIGINAL - 2026-08-01T222238.809.jpg", "ORIGINAL.jpg"
         ];
 
         const gallery = document.getElementById('gallery');
         const overlay = document.getElementById('overlay');
         const zoomImg = document.getElementById('zoomImg');
 
-        // Create image elements
         images.forEach(filename => {
             const div = document.createElement('div');
             div.className = 'grid-item';
             
             const img = document.createElement('img');
             img.src = filename;
-            img.loading = "lazy"; // Improves performance
+            img.loading = "lazy"; 
             
             div.onclick = () => {
                 zoomImg.src = filename;
